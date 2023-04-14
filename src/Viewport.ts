@@ -3,12 +3,17 @@ export class Viewport {
 
   constructor() {
     const canvas = document.querySelector<HTMLCanvasElement>("#canvas")!;
-    canvas.width = 640;
-    canvas.height = 400;
+    canvas.width = 320;
+    canvas.height = 200;
     this.ctx = canvas.getContext("2d")!;
   }
 
-  render() {
-    // TODO
+  drawColumn(column: { color: string; drawStart: number; drawEnd: number; index: number }) {
+    this.ctx.fillStyle = column.color;
+    this.ctx.fillRect(column.index, column.drawStart, 1, column.drawEnd);
+  }
+
+  clear() {
+    this.ctx.clearRect(0, 0, 320, 200);
   }
 }
