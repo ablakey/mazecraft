@@ -55,13 +55,18 @@ export class Renderer {
     // Keep track of the cell we're raycasting through. If there's a hit, we break the loop and this is our cell.
     let cell: number;
 
+    // Which side of a wall are we drawing? X? Otherwise Y.
+    let drawXWall = false;
+
     // Extend the ray by one square until it hits a NS or EW wall.
     do {
       // Jump to the next map square, moving either y or x direction.
       if (sideDistX < sideDistY) {
         sideDistX += deltaDistX;
+        drawXWall = true;
         mapX += stepX;
       } else {
+        drawXWall = false;
         sideDistY += deltaDistY;
         mapY += stepY;
       }
@@ -75,8 +80,8 @@ export class Renderer {
       }
     } while (true);
 
-    // Calculate distance projected on camera direction (Euclidean distance would give fisheye effect!)
-    const perpWallDist = sideDistX < sideDistY ? sideDistX - deltaDistX : sideDistY - deltaDistY;
+    // Calculate distance projected on camera direction. Are we drawing an X or a Y side of a wall?
+    const perpWallDist = drawXWall ? sideDistX - deltaDistX : sideDistY - deltaDistY;
 
     // Height of the vertical column being drawn to the Renderer.
     const drawLineHeight = Math.floor(this.height / perpWallDist);
