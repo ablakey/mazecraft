@@ -1,10 +1,13 @@
-import { Engine } from "./Engine";
+import { Renderer } from "./Renderer";
+import { World } from "./World";
 
+// Until it gets too big, this is the engine.
 function main() {
-  const engine = new Engine();
+  const world = new World();
+  const renderer = new Renderer(world, { screenWidth: 640, screenHeight: 400 });
   setInterval(() => {
-    engine.rotate(-0.1);
-    engine.tick();
+    renderer.moveForward();
+    renderer.drawFrame();
   }, 100);
 }
 
