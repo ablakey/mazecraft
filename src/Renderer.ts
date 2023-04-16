@@ -1,22 +1,31 @@
+import texture from "./assets/wolftextures.png";
+
 export class Renderer {
   private width: number;
   private height: number;
-  private planeX: number;
-  private planeY: number;
   private ctx: CanvasRenderingContext2D;
+  private tex: HTMLImageElement;
 
   constructor(settings: { screenWidth: number; screenHeight: number }) {
     this.width = settings.screenWidth;
     this.height = settings.screenHeight;
-
-    this.planeX = 0;
-    this.planeY = 0.66;
 
     const canvas = document.querySelector<HTMLCanvasElement>("#canvas")!;
     canvas.width = this.width;
     canvas.height = this.height;
     this.ctx = canvas.getContext("2d")!;
     this.ctx.imageSmoothingEnabled = false;
+  }
+
+  async loadTextures() {
+    return new Promise<void>((res) => {
+      this.tex = new Image();
+      this.tex.onload = () => {
+        res();
+        console.log(this.tex.width, this.tex.height);
+      };
+      this.tex.src = texture;
+    });
   }
 
   drawFrame() {
@@ -33,8 +42,8 @@ export class Renderer {
     // https://lodev.org/cgtutor/raycasting.html
     // Position and direction of the casted ray.
     const screenX = (2 * x) / this.width - 1; // The x column of the screen.
-    const rayDirX = game.player.rotX + this.planeX * screenX;
-    const rayDirY = game.player.rotY + this.planeY * screenX;
+    const rayDirX = game.player.rotX + game.player.planeX * screenX;
+    const rayDirY = game.player.rotY + game.player.planeY * screenX;
 
     // Current map cell that the player is in. This mutates as we walk down the ray looking for a wall.
     let mapX = Math.floor(game.player.x);
@@ -90,8 +99,31 @@ export class Renderer {
     const drawStart = Math.floor(Math.max(-drawLineHeight / 2 + this.height / 2, 0));
     const drawEnd = Math.floor(Math.min(drawLineHeight / 2 + this.height / 2, this.height - 1));
 
+    // Where on the wall the ray hit (for determining what part of a texture to draw.
+    // I think 0 would be the far left of the wall segment, 1 is the far right.
+    const wallX = (!drawXWall ? game.player.x + perpWallDist * rayDirX : game.player.y + perpWallDist * rayDirY) % 1;
+
+    const TEXTURE_WIDTH = 64;
+    // X coordinate on the texture.
+    let texX = Math.floor(wallX * TEXTURE_WIDTH);
+    if ((drawXWall && rayDirX > 0) || (!drawXWall && rayDirY < 0)) {
+      texX = TEXTURE_WIDTH - texX - 1;
+    }
+
+    /**
+     * With the X texture value, we can take the entire slice of that texture and draw it to
+     * a smaller vertical slice. All that math and affine transform is done for us by the canvas API.
+     */
+    this.ctx.drawImage(this.tex, texX, 0, 1, 64, x, drawStart, 1, drawEnd - drawStart);
+
     // Draw the line to the canvas.
-    this.ctx.fillStyle = cell === 1 ? "blue" : "red";
-    this.ctx.fillRect(x, drawStart, 1, drawEnd - drawStart);
+    // this.ctx.fillStyle = cell === 1 ? toHex([0, 0, Math.floor(255 * wallX)]) : "red";
+    // this.ctx.fillRect(x, drawStart, 1, drawEnd - drawStart);
+
+    // console.log(x, wallX, texX);
   }
+}
+
+function toHex(rgb: [number, number, number]): string {
+  return `#${rgb[0].toString(16).padStart(2, "0")}${rgb[1].toString(16).padStart(2, "0")}${rgb[2].toString(16).padStart(2, "0")}`;
 }

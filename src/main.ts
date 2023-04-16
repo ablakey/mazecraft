@@ -3,10 +3,12 @@ import { Game } from "./Game";
 import { Renderer } from "./Renderer";
 
 // Until it gets too big, this is the engine.
-function main() {
+async function main() {
   window.engine = new Engine();
   window.game = new Game();
-  window.renderer = new Renderer({ screenWidth: 640, screenHeight: 400 });
+  window.renderer = new Renderer({ screenWidth: 320, screenHeight: 200 });
+
+  await renderer.loadTextures();
 
   engine.start();
 }
