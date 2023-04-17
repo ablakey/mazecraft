@@ -11,7 +11,7 @@ export class Player {
   planeY: number;
 
   constructor() {
-    this.x = 46;
+    this.x = 4;
     this.y = 3;
     this.rotX = 1;
     this.rotY = 0;

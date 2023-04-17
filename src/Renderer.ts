@@ -116,6 +116,22 @@ export class Renderer {
      */
     this.ctx.drawImage(this.tex, texX, 0, 1, 64, x, drawStart, 1, drawEnd - drawStart);
 
+    /**
+     * Some basic fog experiment. The further away, the darker, given some clamped min and max.
+     * This doesn't (yet) handle floor and ceiling so the effect doesn't work.
+     */
+    const distance = Math.min(sideDistX, sideDistY);
+    const MIN_FOG_DISTANCE = 5.0;
+    const MAX_FOG_DISTANCE = 10;
+    if (distance > MIN_FOG_DISTANCE) {
+      const fogRange = MAX_FOG_DISTANCE - MIN_FOG_DISTANCE;
+      const value = distance - MIN_FOG_DISTANCE;
+      const pct = value / fogRange;
+
+      this.ctx.fillStyle = `rgb(0,0,0, ${pct})`;
+      this.ctx.fillRect(x, drawStart, 1, drawEnd - drawStart);
+    }
+
     // Draw the line to the canvas.
     // this.ctx.fillStyle = cell === 1 ? toHex([0, 0, Math.floor(255 * wallX)]) : "red";
     // this.ctx.fillRect(x, drawStart, 1, drawEnd - drawStart);

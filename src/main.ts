@@ -6,7 +6,7 @@ import { Renderer } from "./Renderer";
 async function main() {
   window.engine = new Engine();
   window.game = new Game();
-  window.renderer = new Renderer({ screenWidth: 320, screenHeight: 200 });
+  window.renderer = new Renderer({ screenWidth: 640, screenHeight: 400 });
 
   await renderer.loadTextures();
 
