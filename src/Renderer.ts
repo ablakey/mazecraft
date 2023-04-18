@@ -2,6 +2,10 @@ import texture from "./assets/textures/wolftextures.png";
 import { VIEWPORT_HEIGHT, VIEWPORT_WIDTH } from "./config";
 import { invLerp } from "./utils";
 
+/**
+ * The rendering engine for the Raycasting viewport.
+ * Very heavily borrowed from this fantastic tutorial: https://lodev.org/cgtutor/raycasting.html
+ */
 export class Renderer {
   private width: number;
   private height: number;
@@ -36,13 +40,78 @@ export class Renderer {
     this.ctx.fillStyle = "grey";
     this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
+    // for (let y = 0; y < this.height; y++) {
+    //   this.drawFloorSlice(y);
+    // }
+
     for (let x = 0; x < this.width; x++) {
       this.drawColumn(x);
     }
   }
 
+  private drawFloorSlice(y: number) {
+    // rayDir for leftmost ray (x = 0) and rightmost ray (x = w)
+    const { planeX, planeY, rotX, rotY, x: posX, y: posY } = Game.player;
+    const rayDirX0 = rotX - planeX;
+    const rayDirY0 = rotY - planeY;
+    const rayDirX1 = rotX + planeX;
+    const rayDirY1 = rotY + planeY;
+
+    // Current y position compared to the center of the screen (the horizon)
+    const p = y - this.height / 2;
+
+    // Vertical position of the camera.
+    const posZ = 0.5 * this.height;
+
+    // Horizontal distance from the camera to the floor for the current row.
+    // 0.5 is the z position exactly in the middle between floor and ceiling.
+    const rowDistance = posZ / p;
+
+    // calculate the real world step vector we have to add for each x (parallel to camera plane)
+    // adding step by step avoids multiplications with a weight in the inner loop
+    const floorStepX = (rowDistance * (rayDirX1 - rayDirX0)) / this.width;
+    const floorStepY = (rowDistance * (rayDirY1 - rayDirY0)) / this.width;
+
+    // real world coordinates of the leftmost column. This will be updated as we step to the right.
+    let floorX = posX + rowDistance * rayDirX0;
+    let floorY = posY + rowDistance * rayDirY0;
+
+    for (let x = 0; x < this.width; x++) {
+      // the cell coord is simply got from the integer parts of floorX and floorY
+      const cellX = Math.floor(floorX);
+      const cellY = Math.floor(floorY);
+
+      // get the texture coordinate from the fractional part
+      const tx = Math.floor((128 * (floorX - cellX)) & (128 - 1));
+      const ty = Math.floor((128 * (floorY - cellY)) & (128 - 1));
+
+      floorX += floorStepX;
+      floorY += floorStepY;
+
+      // choose texture and draw the pixel
+      // const floorTexture = 3;
+      // const ceilingTexture = 6;
+
+      // floor
+      // const color = texture[floorTexture][128 * ty + tx];
+      // color = (color >> 1) & 8355711; // make a bit darker
+      // buffer[y][x] = color;
+      const a = new Uint8ClampedArray(4);
+      a[0] = 100;
+      a[1] = 255;
+      a[2] = 255;
+      a[3] = 100;
+      const d = new ImageData(a, 1, 1);
+      this.ctx.putImageData(d, 100, 100);
+
+      // //ceiling (symmetrical, at screenHeight - y - 1 instead of y)
+      // color = texture[ceilingTexture][64 * ty + tx];
+      // color = (color >> 1) & 8355711; // make a bit darker
+      // buffer[screenHeight - y - 1][x] = color;
+    }
+  }
+
   private drawColumn(x: number) {
-    // https://lodev.org/cgtutor/raycasting.html
     // Position and direction of the casted ray.
     const screenX = (2 * x) / this.width - 1; // The x column of the screen.
     const rayDirX = Game.player.rotX + Game.player.planeX * screenX;
@@ -117,7 +186,7 @@ export class Renderer {
      * With the X texture value, we can take the entire slice of that texture and draw it to
      * a smaller vertical slice. All that math and affine transform is done for us by the canvas API.
      */
-    this.ctx.drawImage(Engine.assets.textures.wolftextures, texX, 0, 1, 64, x, drawStart, 1, drawEnd - drawStart);
+    // this.ctx.drawImage(texture, texX, 0, 1, 64, x, drawStart, 1, drawEnd - drawStart);
 
     /**
      * Some basic fog experiment. The further away, the darker, given some clamped min and max.
