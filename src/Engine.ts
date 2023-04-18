@@ -40,7 +40,7 @@ export class Engine {
 
     // TODO: advance the game by a tick.
     // game.player.moveForward();
-    // game.player.rotateRight();
+    Game.player.rotateRight();
 
     this.renderer.drawFrame();
 

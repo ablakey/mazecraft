@@ -4,8 +4,8 @@ export class World {
   cells: number[];
 
   constructor() {
-    this.width = 10;
-    this.height = 10;
+    this.width = 20;
+    this.height = 20;
     this.cells = new Array(this.width * this.height); // Make a box.
 
     // generate a box.

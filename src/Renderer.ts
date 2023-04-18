@@ -1,6 +1,9 @@
 import texture from "./assets/textures/wolftextures.png";
 import { VIEWPORT_HEIGHT, VIEWPORT_WIDTH } from "./config";
-import { invLerp } from "./utils";
+import { invLerp, lerp, toHex } from "./utils";
+type RGB = [number, number, number];
+const SKY: RGB = [135, 206, 235];
+const GROUND: RGB = [200, 200, 200];
 
 /**
  * The rendering engine for the Raycasting viewport.
@@ -41,78 +44,24 @@ export class Renderer {
     this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
     for (let y = 0; y < this.height; y++) {
-      this.drawFloorSlice(y);
+      this.drawBackgroundRow(y);
     }
-
-    // for (let x = 0; x < this.width; x++) {
-    //   this.drawColumn(x);
-    // }
-
-    // Perf experiment.
-    const arr = new Uint8ClampedArray(this.width * this.height * 4);
-    for (let x = 0; x < this.width * this.height; x++) {
-      arr[x] = Math.random() * 255;
-    }
-    this.ctx.putImageData(new ImageData(arr, this.width, this.height), 0, 0);
-    const t1 = performance.now();
-  }
-
-  private drawFloorSlice(y: number) {
-    // rayDir for leftmost ray (x = 0) and rightmost ray (x = w)
-    const { planeX, planeY, rotX, rotY, x: posX, y: posY } = Game.player;
-    const rayDirX0 = rotX - planeX;
-    const rayDirY0 = rotY - planeY;
-    const rayDirX1 = rotX + planeX;
-    const rayDirY1 = rotY + planeY;
-
-    // Current y position compared to the center of the screen (the horizon)
-    const p = y - this.height / 2;
-
-    // Vertical position of the camera.
-    const posZ = 0.5 * this.height;
-
-    // Horizontal distance from the camera to the floor for the current row.
-    // 0.5 is the z position exactly in the middle between floor and ceiling.
-    const rowDistance = posZ / p;
-
-    // calculate the real world step vector we have to add for each x (parallel to camera plane)
-    // adding step by step avoids multiplications with a weight in the inner loop
-    const floorStepX = (rowDistance * (rayDirX1 - rayDirX0)) / this.width;
-    const floorStepY = (rowDistance * (rayDirY1 - rayDirY0)) / this.width;
-
-    // real world coordinates of the leftmost column. This will be updated as we step to the right.
-    let floorX = posX + rowDistance * rayDirX0;
-    let floorY = posY + rowDistance * rayDirY0;
 
     for (let x = 0; x < this.width; x++) {
-      // the cell coord is simply got from the integer parts of floorX and floorY
-      const cellX = Math.floor(floorX);
-      const cellY = Math.floor(floorY);
-
-      // get the texture coordinate from the fractional part
-      const tx = Math.floor((128 * (floorX - cellX)) & (128 - 1));
-      const ty = Math.floor((128 * (floorY - cellY)) & (128 - 1));
-
-      floorX += floorStepX;
-      floorY += floorStepY;
-
-      // choose texture and draw the pixel
-      // const floorTexture = 3;
-      // const ceilingTexture = 6;
-
-      // floor
-      // const color = texture[floorTexture][128 * ty + tx];
-      // color = (color >> 1) & 8355711; // make a bit darker
-      // buffer[y][x] = color;
-
-      // const d = new ImageData(a, 1, 1);
-      // this.ctx.putImageData(d, 100, 100);
-
-      // //ceiling (symmetrical, at screenHeight - y - 1 instead of y)
-      // color = texture[ceilingTexture][64 * ty + tx];
-      // color = (color >> 1) & 8355711; // make a bit darker
-      // buffer[screenHeight - y - 1][x] = color;
+      this.drawColumn(x);
     }
+  }
+
+  private drawBackgroundRow(y: number) {
+    const halfHeight = this.height / 2;
+    if (y < halfHeight) {
+      this.ctx.fillStyle = toHex(SKY);
+    } else {
+      const pct = (y - halfHeight) / halfHeight;
+      const color = GROUND.map((g) => Math.floor(lerp(0, g, pct))) as RGB;
+      this.ctx.fillStyle = toHex(color);
+    }
+    this.ctx.fillRect(0, y, this.width, 1);
   }
 
   private drawColumn(x: number) {
@@ -179,18 +128,19 @@ export class Renderer {
     // I think 0 would be the far left of the wall segment, 1 is the far right.
     const wallX = (!drawXWall ? Game.player.x + perpWallDist * rayDirX : Game.player.y + perpWallDist * rayDirY) % 1;
 
-    const TEXTURE_WIDTH = 64;
+    const texture = Engine.assets.textures.gravel;
+
     // X coordinate on the texture.
-    let texX = Math.floor(wallX * TEXTURE_WIDTH);
+    let texX = Math.floor(wallX * texture.width);
     if ((drawXWall && rayDirX > 0) || (!drawXWall && rayDirY < 0)) {
-      texX = TEXTURE_WIDTH - texX - 1;
+      texX = texture.width - texX - 1;
     }
 
     /**
      * With the X texture value, we can take the entire slice of that texture and draw it to
      * a smaller vertical slice. All that math and affine transform is done for us by the canvas API.
      */
-    // this.ctx.drawImage(texture, texX, 0, 1, 64, x, drawStart, 1, drawEnd - drawStart);
+    this.ctx.drawImage(texture, texX, 0, 1, texture.width, x, drawStart, 1, drawEnd - drawStart);
 
     /**
      * Some basic fog experiment. The further away, the darker, given some clamped min and max.
@@ -204,11 +154,5 @@ export class Renderer {
       this.ctx.fillStyle = `rgb(0,0,0, ${pct})`;
       this.ctx.fillRect(x, drawStart, 1, drawEnd - drawStart);
     }
-
-    // Draw the line to the canvas.
-    // this.ctx.fillStyle = cell === 1 ? toHex([0, 0, Math.floor(255 * wallX)]) : "red";
-    // this.ctx.fillRect(x, drawStart, 1, drawEnd - drawStart);
-
-    // console.log(x, wallX, texX);
   }
 }

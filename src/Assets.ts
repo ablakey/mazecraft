@@ -1,27 +1,23 @@
 import { TextureName, textures } from "./assets/textures";
 
 export class Assets {
-  textures: Record<TextureName, ImageData>;
+  textures: Record<TextureName, HTMLImageElement>;
 
   async loadTextures() {
-    const tex: Partial<Record<string, ImageData>> = {};
+    const tex: Partial<Record<string, HTMLImageElement>> = {};
+
     for (const [name, url] of Object.entries(textures)) {
-      tex[name] = await this.urlToImageData(url);
+      tex[name] = await this.urlToImage(url);
     }
 
     this.textures = tex as typeof this.textures;
-    console.log(this.textures);
   }
 
-  async urlToImageData(url: string) {
-    return new Promise<ImageData>((res) => {
+  async urlToImage(url: string) {
+    return new Promise<HTMLImageElement>((res) => {
       const img = new Image();
       img.onload = () => {
-        const canvas = new OffscreenCanvas(img.width, img.height);
-        const ctx = canvas.getContext("2d")!;
-        ctx.drawImage(img, 0, 0);
-        const imageData = ctx.getImageData(0, 0, img.width, img.height);
-        res(imageData);
+        res(img);
       };
       img.src = url;
     });
