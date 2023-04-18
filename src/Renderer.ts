@@ -40,13 +40,21 @@ export class Renderer {
     this.ctx.fillStyle = "grey";
     this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
-    // for (let y = 0; y < this.height; y++) {
-    //   this.drawFloorSlice(y);
+    for (let y = 0; y < this.height; y++) {
+      this.drawFloorSlice(y);
+    }
+
+    // for (let x = 0; x < this.width; x++) {
+    //   this.drawColumn(x);
     // }
 
-    for (let x = 0; x < this.width; x++) {
-      this.drawColumn(x);
+    // Perf experiment.
+    const arr = new Uint8ClampedArray(this.width * this.height * 4);
+    for (let x = 0; x < this.width * this.height; x++) {
+      arr[x] = Math.random() * 255;
     }
+    this.ctx.putImageData(new ImageData(arr, this.width, this.height), 0, 0);
+    const t1 = performance.now();
   }
 
   private drawFloorSlice(y: number) {
@@ -96,13 +104,9 @@ export class Renderer {
       // const color = texture[floorTexture][128 * ty + tx];
       // color = (color >> 1) & 8355711; // make a bit darker
       // buffer[y][x] = color;
-      const a = new Uint8ClampedArray(4);
-      a[0] = 100;
-      a[1] = 255;
-      a[2] = 255;
-      a[3] = 100;
-      const d = new ImageData(a, 1, 1);
-      this.ctx.putImageData(d, 100, 100);
+
+      // const d = new ImageData(a, 1, 1);
+      // this.ctx.putImageData(d, 100, 100);
 
       // //ceiling (symmetrical, at screenHeight - y - 1 instead of y)
       // color = texture[ceilingTexture][64 * ty + tx];
