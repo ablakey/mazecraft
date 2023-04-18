@@ -1,6 +1,11 @@
+import { Assets } from "./Assets";
+import { Renderer } from "./Renderer";
+
 const FPS = 60;
 
 export class Engine {
+  assets: Assets;
+  renderer: Renderer;
   now: number;
   lastTime: number;
   tickDelta: number;
@@ -8,7 +13,14 @@ export class Engine {
 
   // TODO: controls.
 
-  start() {
+  constructor() {
+    this.assets = new Assets();
+    this.renderer = new Renderer();
+  }
+
+  async init() {
+    await this.assets.loadTextures();
+
     this.now = 0;
     this.lastTime = 0;
     this.tickDelta = 0;
@@ -30,7 +42,7 @@ export class Engine {
     // game.player.moveForward();
     // game.player.rotateRight();
 
-    renderer.drawFrame();
+    this.renderer.drawFrame();
 
     requestAnimationFrame(() => this.tick());
   }

@@ -23,7 +23,7 @@ export class Player {
     const newX = this.x + this.rotX * MOVE_SPEED;
     const newY = this.y + this.rotY * MOVE_SPEED;
 
-    if (!game.world.getCell(newX, newY)) {
+    if (!Game.world.getCell(newX, newY)) {
       this.x = newX;
       this.y = newY;
     } else {

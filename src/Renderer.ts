@@ -1,5 +1,6 @@
-import texture from "./assets/wolftextures.png";
-import { invLerp, lerp } from "./utils";
+import texture from "./assets/textures/wolftextures.png";
+import { VIEWPORT_HEIGHT, VIEWPORT_WIDTH } from "./config";
+import { invLerp } from "./utils";
 
 export class Renderer {
   private width: number;
@@ -7,15 +8,11 @@ export class Renderer {
   private ctx: CanvasRenderingContext2D;
   private tex: HTMLImageElement;
 
-  constructor(settings: { screenWidth: number; screenHeight: number }) {
-    this.width = settings.screenWidth;
-    this.height = settings.screenHeight;
-
+  constructor() {
     const canvas = document.querySelector<HTMLCanvasElement>("#canvas")!;
-    canvas.width = this.width;
-    canvas.height = this.height;
     this.ctx = canvas.getContext("2d")!;
     this.ctx.imageSmoothingEnabled = false;
+    this.setResolution(VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
   }
 
   setResolution(w: number, h: number) {
@@ -36,13 +33,6 @@ export class Renderer {
   }
 
   drawFrame() {
-    // Experiment with resolution.
-    const pct = (performance.now() / 10000) % 1;
-    const w = lerp(0, 640, pct);
-    const h = lerp(0, 320, pct);
-    this.setResolution(w, h);
-
-    // Clear the last frame.
     this.ctx.fillStyle = "grey";
     this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
@@ -55,12 +45,12 @@ export class Renderer {
     // https://lodev.org/cgtutor/raycasting.html
     // Position and direction of the casted ray.
     const screenX = (2 * x) / this.width - 1; // The x column of the screen.
-    const rayDirX = game.player.rotX + game.player.planeX * screenX;
-    const rayDirY = game.player.rotY + game.player.planeY * screenX;
+    const rayDirX = Game.player.rotX + Game.player.planeX * screenX;
+    const rayDirY = Game.player.rotY + Game.player.planeY * screenX;
 
     // Current map cell that the player is in. This mutates as we walk down the ray looking for a wall.
-    let mapX = Math.floor(game.player.x);
-    let mapY = Math.floor(game.player.y);
+    let mapX = Math.floor(Game.player.x);
+    let mapY = Math.floor(Game.player.y);
 
     // Length of ray for one map cell (x or y side)
     const deltaDistX = rayDirX === 0 ? Number.POSITIVE_INFINITY : Math.abs(1 / rayDirX);
@@ -71,8 +61,8 @@ export class Renderer {
     const stepY = rayDirY < 0 ? -1 : 1;
 
     // Length of initial segment of ray from player position to next. Mutates as we walk down the ray.
-    let sideDistX = rayDirX < 0 ? game.player.x - mapX : (mapX + 1.0 - game.player.x) * deltaDistX;
-    let sideDistY = rayDirY < 0 ? game.player.y - mapY : (mapY + 1.0 - game.player.y) * deltaDistY;
+    let sideDistX = rayDirX < 0 ? Game.player.x - mapX : (mapX + 1.0 - Game.player.x) * deltaDistX;
+    let sideDistY = rayDirY < 0 ? Game.player.y - mapY : (mapY + 1.0 - Game.player.y) * deltaDistY;
 
     // Keep track of the cell we're raycasting through. If there's a hit, we break the loop and this is our cell.
     let cell: number;
@@ -94,7 +84,7 @@ export class Renderer {
       }
 
       // Look up the map tile for this cell.
-      cell = game.world.getCell(mapX, mapY);
+      cell = Game.world.getCell(mapX, mapY);
 
       // Did we hit something given the map?
       if (cell > 0) {
@@ -114,7 +104,7 @@ export class Renderer {
 
     // Where on the wall the ray hit (for determining what part of a texture to draw.
     // I think 0 would be the far left of the wall segment, 1 is the far right.
-    const wallX = (!drawXWall ? game.player.x + perpWallDist * rayDirX : game.player.y + perpWallDist * rayDirY) % 1;
+    const wallX = (!drawXWall ? Game.player.x + perpWallDist * rayDirX : Game.player.y + perpWallDist * rayDirY) % 1;
 
     const TEXTURE_WIDTH = 64;
     // X coordinate on the texture.
@@ -127,7 +117,7 @@ export class Renderer {
      * With the X texture value, we can take the entire slice of that texture and draw it to
      * a smaller vertical slice. All that math and affine transform is done for us by the canvas API.
      */
-    this.ctx.drawImage(this.tex, texX, 0, 1, 64, x, drawStart, 1, drawEnd - drawStart);
+    this.ctx.drawImage(Engine.assets.textures.wolftextures, texX, 0, 1, 64, x, drawStart, 1, drawEnd - drawStart);
 
     /**
      * Some basic fog experiment. The further away, the darker, given some clamped min and max.
