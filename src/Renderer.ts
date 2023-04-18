@@ -1,4 +1,5 @@
 import texture from "./assets/wolftextures.png";
+import { invLerp, lerp } from "./utils";
 
 export class Renderer {
   private width: number;
@@ -17,18 +18,30 @@ export class Renderer {
     this.ctx.imageSmoothingEnabled = false;
   }
 
+  setResolution(w: number, h: number) {
+    this.ctx.canvas.width = w;
+    this.ctx.canvas.height = h;
+    this.width = w;
+    this.height = h;
+  }
+
   async loadTextures() {
     return new Promise<void>((res) => {
       this.tex = new Image();
       this.tex.onload = () => {
         res();
-        console.log(this.tex.width, this.tex.height);
       };
       this.tex.src = texture;
     });
   }
 
   drawFrame() {
+    // Experiment with resolution.
+    const pct = (performance.now() / 10000) % 1;
+    const w = lerp(0, 640, pct);
+    const h = lerp(0, 320, pct);
+    this.setResolution(w, h);
+
     // Clear the last frame.
     this.ctx.fillStyle = "grey";
     this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
@@ -124,10 +137,7 @@ export class Renderer {
     const MIN_FOG_DISTANCE = 5.0;
     const MAX_FOG_DISTANCE = 10;
     if (distance > MIN_FOG_DISTANCE) {
-      const fogRange = MAX_FOG_DISTANCE - MIN_FOG_DISTANCE;
-      const value = distance - MIN_FOG_DISTANCE;
-      const pct = value / fogRange;
-
+      const pct = invLerp(MIN_FOG_DISTANCE, MAX_FOG_DISTANCE, distance);
       this.ctx.fillStyle = `rgb(0,0,0, ${pct})`;
       this.ctx.fillRect(x, drawStart, 1, drawEnd - drawStart);
     }
@@ -138,8 +148,4 @@ export class Renderer {
 
     // console.log(x, wallX, texX);
   }
-}
-
-function toHex(rgb: [number, number, number]): string {
-  return `#${rgb[0].toString(16).padStart(2, "0")}${rgb[1].toString(16).padStart(2, "0")}${rgb[2].toString(16).padStart(2, "0")}`;
 }

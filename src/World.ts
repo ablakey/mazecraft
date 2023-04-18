@@ -4,16 +4,12 @@ export class World {
   cells: number[];
 
   constructor() {
-    this.width = 30;
-    this.height = 30;
+    this.width = 10;
+    this.height = 10;
     this.cells = new Array(this.width * this.height); // Make a box.
 
+    // generate a box.
     this.forEachCell((x, y) => {
-      // // Random blocks.
-      // if (Math.random() > 0.95) {
-      //   this.setCell(x, y, 2);
-      // }
-
       if (x === 0 || y === 0 || x === this.width - 1 || y === this.height - 1) {
         this.setCell(x, y, 1);
       }
