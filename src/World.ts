@@ -8,10 +8,13 @@ export class World {
     this.height = 20;
     this.cells = new Array(this.width * this.height); // Make a box.
 
-    // generate a box.
     this.forEachCell((x, y) => {
+      // generate a box.
       if (x === 0 || y === 0 || x === this.width - 1 || y === this.height - 1) {
         this.setCell(x, y, 1);
+      } else if (Math.random() > 0.95) {
+        this.setCell(x, y, 2);
+        // Generate some random things on the map for demo purposes.
       }
     });
   }
