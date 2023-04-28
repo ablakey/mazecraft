@@ -1,4 +1,4 @@
-import { TextureName, textures } from "./assets/textures";
+import { TextureName, textures } from "../assets/textures";
 
 export class Assets {
   textures: Record<TextureName, HTMLImageElement>;

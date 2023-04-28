@@ -1,5 +1,5 @@
-import { Engine as EngineSingleton } from "./Engine";
-import { Game as GameSingleton } from "./Game";
+import { Engine as EngineSingleton } from "./engine/Engine";
+import { Game as GameSingleton } from "./game/Game";
 
 // Until it gets too big, this is the engine.
 async function main() {

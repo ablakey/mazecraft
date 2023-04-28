@@ -1,5 +1,5 @@
-import texture from "./assets/textures/wolftextures.png";
-import { invLerp, lerp, toHex } from "./utils";
+import texture from "../assets/textures/wolftextures.png";
+import { invLerp, lerp, toHex } from "../utils";
 type RGB = [number, number, number];
 const SKY: RGB = [135, 206, 235];
 const GROUND: RGB = [200, 200, 200];
