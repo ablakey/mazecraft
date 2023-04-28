@@ -1,11 +1,14 @@
 import { Assets } from "./Assets";
-import { Renderer } from "./Renderer";
+import { Viewport } from "./Viewport";
 
 const FPS = 60;
 
+/**
+ * Engine runs the ticking and rendering.
+ */
 export class Engine {
   assets: Assets;
-  renderer: Renderer;
+  viewport: Viewport;
   now: number;
   lastTime: number;
   tickDelta: number;
@@ -15,7 +18,7 @@ export class Engine {
 
   constructor() {
     this.assets = new Assets();
-    this.renderer = new Renderer();
+    this.viewport = new Viewport(640, 400);
   }
 
   async init() {
@@ -42,7 +45,7 @@ export class Engine {
     // game.player.moveForward();
     Game.player.rotateRight();
 
-    this.renderer.drawFrame();
+    this.viewport.drawFrame();
 
     requestAnimationFrame(() => this.tick());
   }

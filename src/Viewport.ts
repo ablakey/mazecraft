@@ -1,5 +1,4 @@
 import texture from "./assets/textures/wolftextures.png";
-import { VIEWPORT_HEIGHT, VIEWPORT_WIDTH } from "./config";
 import { invLerp, lerp, toHex } from "./utils";
 type RGB = [number, number, number];
 const SKY: RGB = [135, 206, 235];
@@ -9,17 +8,19 @@ const GROUND: RGB = [200, 200, 200];
  * The rendering engine for the Raycasting viewport.
  * Very heavily borrowed from this fantastic tutorial: https://lodev.org/cgtutor/raycasting.html
  */
-export class Renderer {
+export class Viewport {
   private width: number;
   private height: number;
   private ctx: CanvasRenderingContext2D;
   private tex: HTMLImageElement;
 
-  constructor() {
-    const canvas = document.querySelector<HTMLCanvasElement>("#canvas")!;
+  constructor(w: number, h: number) {
+    const viewport = document.querySelector<HTMLCanvasElement>("#viewport")!;
+    const canvas = document.createElement("canvas");
+    viewport.appendChild(canvas);
     this.ctx = canvas.getContext("2d")!;
     this.ctx.imageSmoothingEnabled = false;
-    this.setResolution(VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
+    this.setResolution(w, h);
   }
 
   setResolution(w: number, h: number) {
@@ -117,10 +118,10 @@ export class Renderer {
     // Calculate distance projected on camera direction. Are we drawing an X or a Y side of a wall?
     const perpWallDist = drawXWall ? sideDistX - deltaDistX : sideDistY - deltaDistY;
 
-    // Height of the vertical column being drawn to the Renderer.
+    // Height of the vertical column being drawn to the Viewport.
     const drawLineHeight = Math.floor(this.height / perpWallDist);
 
-    // The start and end pixels of this column, clamped to not run outside the Renderer.
+    // The start and end pixels of this column, clamped to not run outside the Viewport.
     const drawStart = Math.floor(Math.max(-drawLineHeight / 2 + this.height / 2, 0));
     const drawEnd = Math.floor(Math.min(drawLineHeight / 2 + this.height / 2, this.height - 1));
 
