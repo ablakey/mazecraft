@@ -1,4 +1,5 @@
 import { Assets } from "./Assets";
+import { MapFrame } from "./MapFrame";
 import { Viewport } from "./Viewport";
 
 const FPS = 60;
@@ -9,6 +10,7 @@ const FPS = 60;
 export class Engine {
   assets: Assets;
   viewport: Viewport;
+  mapframe: MapFrame;
   now: number;
   lastTime: number;
   tickDelta: number;
@@ -19,6 +21,7 @@ export class Engine {
   constructor() {
     this.assets = new Assets();
     this.viewport = new Viewport(640, 400);
+    this.mapframe = new MapFrame(800, 600);
   }
 
   async init() {
@@ -43,9 +46,10 @@ export class Engine {
 
     // TODO: advance the game by a tick.
     // game.player.moveForward();
-    Game.player.rotateRight();
+    // Game.player.rotateRight();
+    // this.viewport.drawFrame();
 
-    this.viewport.drawFrame();
+    this.mapframe.draw();
 
     requestAnimationFrame(() => this.tick());
   }
