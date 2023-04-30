@@ -38,10 +38,11 @@ export class GLCanvas {
   constructor(w: number, h: number, parentElementSelector: string) {
     const viewport = document.querySelector<HTMLCanvasElement>(parentElementSelector)!;
     const canvas = document.createElement("canvas");
-    viewport.appendChild(canvas);
-    const gl = canvas.getContext("webgl")!;
     canvas.width = w;
     canvas.height = h;
+    viewport.appendChild(canvas);
+
+    const gl = canvas.getContext("webgl")!;
     this.gl = gl;
 
     const program = gl.createProgram()!;

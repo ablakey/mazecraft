@@ -1,6 +1,6 @@
 import { Assets } from "./Assets";
-import { MapFrame } from "./MapFrame";
-import { Viewport } from "./Viewport";
+import { MapFrame } from "./ui/MapFrame";
+import { Viewport } from "./ui/Viewport";
 
 const FPS = 60;
 
@@ -10,7 +10,6 @@ const FPS = 60;
 export class Engine {
   assets: Assets;
   viewport: Viewport;
-  // mapframe: MapFrame;
   mapframe: MapFrame;
   now: number;
   lastTime: number;
@@ -50,7 +49,7 @@ export class Engine {
     // Game.player.rotateRight();
     // this.viewport.drawFrame();
 
-    this.mapframe.draw();
+    this.mapframe.render();
 
     requestAnimationFrame(() => this.tick());
   }

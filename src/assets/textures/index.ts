@@ -5,10 +5,7 @@
 //
 
 import gravel from "./gravel.png";
-import gravelSmall from "./gravelSmall.png";
-import wolftextures from "./wolftextures.png";
-import star from "./star.jpg";
 
-export const textures = { gravel, gravelSmall, wolftextures, star };
+export const textures = { gravel };
 
 export type TextureName = keyof typeof textures;
