@@ -1,3 +1,9 @@
+/**
+ * A minimal implementation of a WebGL-based canvas that offers a limited "drawImage" API akin to the "2d" canvas
+ * context.
+ *
+ * Inspired by: https://webglfundamentals.org/webgl/lessons/webgl-2d-drawimage.html
+ */
 export class GLCanvas {
   private static FRAGMENT_SHADER = `
     precision mediump float;
@@ -19,18 +25,18 @@ export class GLCanvas {
     }
   `;
 
-  gl: WebGLRenderingContext;
-  program: WebGLProgram;
-  positionLocation: number;
-  texcoordLocation: number;
-  matrixLocation: WebGLUniformLocation;
-  textureLocation: WebGLUniformLocation;
-  positionBuffer: WebGLBuffer;
-  texcoordBuffer: WebGLBuffer;
-  textureCache: Map<HTMLImageElement, { texture: WebGLTexture; width: number; height: number }> = new Map();
+  private gl: WebGLRenderingContext;
+  private program: WebGLProgram;
+  private positionLocation: number;
+  private texcoordLocation: number;
+  private matrixLocation: WebGLUniformLocation;
+  private textureLocation: WebGLUniformLocation;
+  private positionBuffer: WebGLBuffer;
+  private texcoordBuffer: WebGLBuffer;
+  private textureCache: Map<HTMLImageElement, { texture: WebGLTexture; width: number; height: number }> = new Map();
 
-  constructor(w: number, h: number, parentSelector: string) {
-    const viewport = document.querySelector<HTMLCanvasElement>(parentSelector)!;
+  constructor(w: number, h: number, parentElementSelector: string) {
+    const viewport = document.querySelector<HTMLCanvasElement>(parentElementSelector)!;
     const canvas = document.createElement("canvas");
     viewport.appendChild(canvas);
     const gl = canvas.getContext("webgl")!;
