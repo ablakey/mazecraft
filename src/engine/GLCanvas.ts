@@ -1,5 +1,3 @@
-import { m4 } from "./m4";
-
 export class GLCanvas {
   private static FRAGMENT_SHADER = `
     precision mediump float;
@@ -95,33 +93,14 @@ export class GLCanvas {
   }
 
   private buildMatrix(x: number, y: number, w: number, h: number) {
-    const { width, height } = this.gl.canvas;
-    let mat = new Float32Array([
-      2 / (width - 0),
-      0,
-      0,
-      0,
-      0,
-      2 / (0 - height),
-      0,
-      0,
-      0,
-      0,
-      2 / (0 - 1),
-      0,
-      (0 + width) / (0 - width),
-      (height + 0) / (height - 0),
-      (0 + -1) / (0 - -1),
-      1,
-    ]);
-
-    // let matrix = m4.orthographic(0, this.gl.canvas.width, this.gl.canvas.height, 0, -1, 1);
-    mat = m4.translate(mat, x, y, 0);
-    mat = m4.scale(mat, w, h, 1);
-    return mat;
+    // Don't ask. I stubbornly refuse to grok matrices. This is a combination of orthographic, scale, transform.
+    // See: https://webglfundamentals.org/webgl/resources/m4.js
+    const ww = 2 / this.gl.canvas.width;
+    const hh = 2 / -this.gl.canvas.height;
+    return new Float32Array([ww * w, 0, 0, 0, 0, hh * h, 0, 0, 0, 0, -2, 0, ww * x - 1, hh * y + 1, -1, 1]);
   }
 
-  drawImage(img: HTMLImageElement, x: number, y: number) {
+  drawImage(img: HTMLImageElement, x: number, y: number, w?: number, h?: number) {
     const { width, height, texture } = this.getTexture(img)!;
 
     const gl = this.gl;
@@ -137,7 +116,7 @@ export class GLCanvas {
     gl.enableVertexAttribArray(this.texcoordLocation);
     gl.vertexAttribPointer(this.texcoordLocation, 2, gl.FLOAT, false, 0, 0);
 
-    const matrix = this.buildMatrix(x, y, width, height);
+    const matrix = this.buildMatrix(x, y, w ?? width, h ?? height);
 
     gl.uniformMatrix4fv(this.matrixLocation, false, matrix);
     gl.uniform1i(this.textureLocation, 0);
