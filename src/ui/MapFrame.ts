@@ -25,12 +25,12 @@ export class MapFrame {
 
     for (let row = -1; row < numRows + 1; row++) {
       for (let col = -1; col < numCols + 1; col++) {
-        this.drawCell(col * CELL_SIZE, row * CELL_SIZE);
+        this.drawTile(col * CELL_SIZE, row * CELL_SIZE);
       }
     }
   }
 
-  drawCell(x: number, y: number) {
+  drawTile(x: number, y: number) {
     const tex = Engine.assets.textures.gravel;
     this.glcanvas.drawImage(tex, x, y, TILE_SIZE, TILE_SIZE);
   }
