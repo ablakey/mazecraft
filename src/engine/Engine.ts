@@ -33,9 +33,8 @@ export class Engine {
     this.now = 0;
     this.lastTime = 0;
     this.tickDelta = 0;
-    // this.tick();
-
     this.mapframe.start(800, 600);
+    this.tick();
   }
 
   private tick() {
@@ -48,6 +47,7 @@ export class Engine {
     if (this.tickDelta > 1000 / FPS && this.isRunning) {
       this.tickDelta = 0;
     }
+    this.mapframe.draw();
 
     // TODO: advance the game by a tick.
     // game.player.moveForward();
