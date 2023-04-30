@@ -1,6 +1,5 @@
 import { Assets } from "./Assets";
-import { GLMapFrame } from "./GLMapFrame";
-import { MapFrame } from "./MapFrame";
+import { GLCanvas } from "./GLCanvas";
 import { Viewport } from "./Viewport";
 
 const FPS = 60;
@@ -12,7 +11,7 @@ export class Engine {
   assets: Assets;
   viewport: Viewport;
   // mapframe: MapFrame;
-  mapframe: GLMapFrame;
+  mapframe: GLCanvas;
   now: number;
   lastTime: number;
   tickDelta: number;
@@ -24,7 +23,7 @@ export class Engine {
     this.assets = new Assets();
     // this.viewport = new Viewport(640, 400);
     // this.mapframe = new MapFrame(800, 600);
-    this.mapframe = new GLMapFrame();
+    this.mapframe = new GLCanvas(800, 600, "#mapframe");
   }
 
   async init() {
@@ -33,7 +32,6 @@ export class Engine {
     this.now = 0;
     this.lastTime = 0;
     this.tickDelta = 0;
-    this.mapframe.start(800, 600);
     this.tick();
   }
 
@@ -47,7 +45,9 @@ export class Engine {
     if (this.tickDelta > 1000 / FPS && this.isRunning) {
       this.tickDelta = 0;
     }
-    this.mapframe.draw();
+
+    this.mapframe.drawImage(this.assets.textures.gravel, 100, 100);
+    this.mapframe.drawImage(this.assets.textures.star, 200, 100);
 
     // TODO: advance the game by a tick.
     // game.player.moveForward();

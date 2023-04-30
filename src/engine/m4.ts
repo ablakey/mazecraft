@@ -533,7 +533,7 @@ function translation(tx, ty, tz, dst) {
  * @return {Matrix4} dst or a new matrix if none provided
  * @memberOf module:webgl-3d-math
  */
-function translate(m, tx, ty, tz, dst?: number) {
+function translate(m, tx, ty, tz, dst?: any) {
   // This is the optimized version of
   // return multiply(m, translation(tx, ty, tz), dst);
   dst = dst || new MatType(16);
