@@ -1,7 +1,6 @@
 import { Assets } from "./Assets";
 import { MapFrame } from "../ui/MapFrame";
 import { Viewport } from "../ui/Viewport";
-import { Tiles } from "../Tiles";
 
 const FPS = 60;
 
@@ -12,7 +11,6 @@ export class Engine {
   assets: Assets;
   viewport: Viewport;
   mapframe: MapFrame;
-  tiles: Tiles;
 
   now: number;
   lastTime: number;
@@ -24,8 +22,7 @@ export class Engine {
   constructor() {
     this.assets = new Assets();
     // this.viewport = new Viewport(640, 400);
-    this.mapframe = new MapFrame(800, 600);
-    this.tiles = new Tiles();
+    this.mapframe = new MapFrame(800, 600, 5000, 5000);
   }
 
   async init() {

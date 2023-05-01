@@ -1,3 +1,4 @@
+import { Tiles } from "./Tiles";
 import { Player } from "./Player";
 import { World } from "./World";
 
@@ -7,9 +8,15 @@ import { World } from "./World";
 export class Game {
   world: World;
   player: Player;
+  tiles: Tiles;
 
   constructor() {
-    this.world = new World();
+    this.tiles = new Tiles();
     this.player = new Player();
+    this.world = new World();
+  }
+
+  init() {
+    this.tiles.prepareTiles();
   }
 }

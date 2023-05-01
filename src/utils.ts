@@ -7,7 +7,9 @@ export function invLerp(start: number, end: number, value: number) {
 }
 
 export function toHex(rgb: readonly [number, number, number]): string {
-  return `#${rgb[0].toString(16).padStart(2, "0")}${rgb[1].toString(16).padStart(2, "0")}${rgb[2].toString(16).padStart(2, "0")}`;
+  return `#${rgb[0].toString(16).padStart(2, "0")}${rgb[1].toString(16).padStart(2, "0")}${rgb[2]
+    .toString(16)
+    .padStart(2, "0")}`;
 }
 
 /**
@@ -16,6 +18,6 @@ export function toHex(rgb: readonly [number, number, number]): string {
  */
 export function assert(condition: any, msg = "no info provided by developer."): asserts condition {
   if (!condition) {
-    throw new Error("Assertion Error: " + msg);
+    throw new Error("Assertion Error for " + msg);
   }
 }
