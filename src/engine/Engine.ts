@@ -3,6 +3,7 @@ import { World } from "./World";
 import { Assets } from "./Assets";
 import { MapFrame } from "./MapFrame";
 import { Viewport } from "./Viewport";
+import { MAX_HEIGHT, MAX_WIDTH } from "../config";
 
 const FPS = 60;
 
@@ -26,7 +27,8 @@ export class Engine {
   constructor() {
     this.assets = new Assets();
     // this.viewport = new Viewport(640, 400);
-    this.mapframe = new MapFrame(800, 600, 0, 0, this);
+    // Begin at the middle of the World to make editing in any direction easy.
+    this.mapframe = new MapFrame(800, 600, MAX_WIDTH / 2, MAX_HEIGHT / 2, this);
 
     this.player = new Player();
     this.world = new World();
@@ -37,7 +39,7 @@ export class Engine {
     await this.world.prepareTiles();
   }
 
-  start() {
+  play() {
     this.now = 0;
     this.lastTime = 0;
     this.tickDelta = 0;

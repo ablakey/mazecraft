@@ -3,8 +3,9 @@ import { Engine as EngineSingleton } from "./engine/Engine";
 async function main() {
   window.Engine = new EngineSingleton();
 
-  await Engine.init();
-  Engine.start();
+  await Engine.init(); // Load everything and get prepared.
+
+  Engine.play(); // Begin game loop.
 }
 
 window.onload = main;

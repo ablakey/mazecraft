@@ -1,5 +1,18 @@
 import { Engine } from "./Engine";
-import { GLCanvas, GLCanvasMouseEventType } from "./GLCanvas";
+import { GLCanvas } from "./GLCanvas";
+
+type MapFrameEvent =
+  | {
+      type: "mousemove";
+      frameX: number;
+      frameY: number;
+    }
+  | {
+      type: "mousedown";
+    }
+  | {
+      type: "mouseup";
+    };
 
 const TILE_SIZE = 24;
 const BORDER_SIZE = 1;
@@ -11,13 +24,17 @@ export class MapFrame {
   private height: number;
 
   // Pixel coordinates of the very top-left pixel.
-  private originX: number;
-  private originY: number;
+  private origin: [number, number];
 
   private glcanvas: GLCanvas;
 
-  // Mouse event handling.
-  private mouseDown = false;
+  // MapFrame coordinates when mouse was held down.
+  private mouseDownCoords: [number, number] | null = null;
+
+  // Origin coordinates when mouse was held down.
+  private mouseDownOrigin: [number, number] | null = null;
+
+  private interaction = "Pan";
 
   constructor(w: number, h: number, initialX: number, initialY: number, engine: Engine) {
     this.engine = engine;
@@ -25,17 +42,23 @@ export class MapFrame {
     this.width = w;
     this.height = h;
 
-    // Pixel coordinates of the top-left of the current view. Can never be negative.
-    this.originX = initialX * CELL_SIZE;
-    this.originY = initialY * CELL_SIZE;
+    this.origin = [initialX * CELL_SIZE, initialY * CELL_SIZE];
   }
 
-  private onMouseEvent(e: MouseEvent, type: GLCanvasMouseEventType) {
+  private onMouseEvent(e: MouseEvent, type: MapFrameEvent["type"]) {
+    // const mapX = Math.floor((e.offsetX + this.originX) / CELL_SIZE);
+    // const mapY = Math.floor((e.offsetY + this.originY) / CELL_SIZE);
+
     if (type === "mousedown") {
-      this.mouseDown = true;
+      this.mouseDownCoords = [e.offsetX, e.offsetY];
+      this.mouseDownOrigin = [...this.origin];
     } else if (type === "mouseup") {
-      this.mouseDown = false;
-    } else if (this.mouseDown) {
+      this.mouseDownCoords = null;
+      this.mouseDownOrigin = null;
+    } else if (this.mouseDownCoords) {
+      const deltaX = e.offsetX - this.mouseDownCoords[0];
+      const deltaY = e.offsetY - this.mouseDownCoords[1];
+      this.origin = [this.mouseDownOrigin![0] - deltaX, this.mouseDownOrigin![1] - deltaY];
     }
   }
 
@@ -51,12 +74,12 @@ export class MapFrame {
     const numRows = Math.ceil(this.height / CELL_SIZE);
 
     // Whole cell offsets.
-    const xCell = Math.floor(this.originX / CELL_SIZE);
-    const yCell = Math.floor(this.originY / CELL_SIZE);
+    const xCell = Math.floor(this.origin[0] / CELL_SIZE);
+    const yCell = Math.floor(this.origin[1] / CELL_SIZE);
 
     // Fractional cell offsets.
-    const xFrac = this.originX % CELL_SIZE;
-    const yFrac = this.originY % CELL_SIZE;
+    const xFrac = this.origin[0] % CELL_SIZE;
+    const yFrac = this.origin[1] % CELL_SIZE;
 
     // Add an extra before and after for when we're showing part rows/cols.
     for (let row = -1; row < numRows + 1; row++) {

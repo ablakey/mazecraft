@@ -1,5 +1,3 @@
-export type GLCanvasMouseEventType = "mousemove" | "mousedown" | "mouseup";
-
 /**
  * A minimal implementation of a WebGL-based canvas that offers a limited "drawImage" API akin to the "2d" canvas
  * context.
@@ -41,7 +39,7 @@ export class GLCanvas {
     width: number,
     height: number,
     parentElementSelector: string,
-    onMouseEvent: (e: MouseEvent, type: GLCanvasMouseEventType) => void
+    onMouseEvent: (e: MouseEvent, type: "mousemove" | "mousedown" | "mouseup") => void
   ) {
     const viewport = document.querySelector<HTMLCanvasElement>(parentElementSelector)!;
     const canvas = document.createElement("canvas");
