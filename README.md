@@ -1,15 +1,17 @@
 # mazecraft
 
-## Random ideas
+## Command pattern for drawing on the map.
 
-- first person view, moving around the map, You can see things normally.
-- On the top-down map it draws with lidar-like hits. So you can see outlines of stuff.
-- You are exploring, looking for an exit.
-- You can find:
-  - better scanner that detects further away
-  - scanner upgrade that detects longer (like a memory upgrade?)
-- Challenges:
-  - Find the exit
-  - Avoid or disable the haywire robots
+I need to be able to freehand draw, interactively see the progress, and keep an undo history.
 
-Start with a melee weapon (ie. a laptop or phone for hacking). Can get some ranged weapon.
+- need to track every pixel that got drawn on
+
+- need to draw them in real-time.
+
+- once mouseup, need to keep a history of the entire drawn set of pixels and their previous values.
+
+
+So once mousedown begins, start checking for pixels. Every time a pixel is being drawn that hasn't already been drawn, add it to the "drawn" array and add "previousValue" to the drawnArray.
+
+previousValue is a number (enum mapping to tile)
+drawn is a number (enum mapping to tile)
