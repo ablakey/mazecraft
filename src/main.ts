@@ -1,12 +1,10 @@
 import { Engine as EngineSingleton } from "./engine/Engine";
-import { Game as GameSingleton } from "./game/Game";
 
-// Until it gets too big, this is the engine.
 async function main() {
   window.Engine = new EngineSingleton();
-  window.Game = new GameSingleton();
 
   await Engine.init();
+  Engine.start();
 }
 
 window.onload = main;
@@ -21,10 +19,8 @@ window.onload = main;
  * tl;dr: you probably don't want to do this in any sort of production code.
  */
 declare global {
-  const Game: GameSingleton;
   const Engine: EngineSingleton;
   interface Window {
-    Game: GameSingleton;
     Engine: EngineSingleton;
   }
 }

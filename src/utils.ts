@@ -21,3 +21,7 @@ export function assert(condition: any, msg = "no info provided by developer."): 
     throw new Error("Assertion Error for " + msg);
   }
 }
+
+export function clamp(value: number, min: number, max: number) {
+  return Math.max(Math.min(value, max), min);
+}

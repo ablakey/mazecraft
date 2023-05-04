@@ -1,5 +1,12 @@
 # mazecraft
 
+## Events
+
+- dragging to pan the map
+- click a tile to place something
+- click and drag to place many things
+- click an drag to place a box.
+
 ## Command pattern for drawing on the map.
 
 I need to be able to freehand draw, interactively see the progress, and keep an undo history.
@@ -15,3 +22,5 @@ So once mousedown begins, start checking for pixels. Every time a pixel is being
 
 previousValue is a number (enum mapping to tile)
 drawn is a number (enum mapping to tile)
+
+

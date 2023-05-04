@@ -1,6 +1,8 @@
+import { Player } from "../game/Player";
+import { World } from "../game/World";
 import { Assets } from "./Assets";
-import { MapFrame } from "../ui/MapFrame";
-import { Viewport } from "../ui/Viewport";
+import { MapFrame } from "./MapFrame";
+import { Viewport } from "./Viewport";
 
 const FPS = 60;
 
@@ -11,6 +13,8 @@ export class Engine {
   assets: Assets;
   viewport: Viewport;
   mapframe: MapFrame;
+  world: World;
+  player: Player;
 
   now: number;
   lastTime: number;
@@ -22,12 +26,18 @@ export class Engine {
   constructor() {
     this.assets = new Assets();
     // this.viewport = new Viewport(640, 400);
-    this.mapframe = new MapFrame(800, 600, 5000, 5000);
+    this.mapframe = new MapFrame(800, 600, 0, 0);
+
+    this.player = new Player();
+    this.world = new World();
   }
 
   async init() {
     await this.assets.loadTextures();
+    await this.world.prepareTiles();
+  }
 
+  start() {
     this.now = 0;
     this.lastTime = 0;
     this.tickDelta = 0;
