@@ -3,8 +3,7 @@ import { MAX_HEIGHT, MAX_WIDTH, TILE_CONFIGS } from "../config";
 import { assert } from "../utils";
 
 export type TileName = TextureName | "Empty";
-export type TileConfig = { name: TileName };
-export type Tile = TileConfig & { img: HTMLImageElement };
+export type Tile = { name: TileName; img: HTMLImageElement; type: "Wall" | "Doodad" | "Item" };
 
 export class World {
   // A sparse array with a known max width/height so that we may easily access any specific row.

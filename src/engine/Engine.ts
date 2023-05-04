@@ -1,5 +1,5 @@
-import { Player } from "../game/Player";
-import { World } from "../game/World";
+import { Player } from "./Player";
+import { World } from "./World";
 import { Assets } from "./Assets";
 import { MapFrame } from "./MapFrame";
 import { Viewport } from "./Viewport";
@@ -26,7 +26,7 @@ export class Engine {
   constructor() {
     this.assets = new Assets();
     // this.viewport = new Viewport(640, 400);
-    this.mapframe = new MapFrame(800, 600, 0, 0);
+    this.mapframe = new MapFrame(800, 600, 0, 0, this);
 
     this.player = new Player();
     this.world = new World();

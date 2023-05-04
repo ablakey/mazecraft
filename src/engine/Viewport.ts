@@ -1,5 +1,6 @@
 import texture from "../assets/textures/wolftextures.png";
 import { invLerp, lerp, toHex } from "../utils";
+import { Engine } from "./Engine";
 type RGB = [number, number, number];
 const SKY: RGB = [135, 206, 235];
 const GROUND: RGB = [200, 200, 200];
@@ -13,8 +14,10 @@ export class Viewport {
   private height: number;
   private ctx: CanvasRenderingContext2D;
   private tex: HTMLImageElement;
+  private engine: Engine;
 
-  constructor(w: number, h: number) {
+  constructor(w: number, h: number, engine: Engine) {
+    this.engine = engine;
     const viewport = document.querySelector<HTMLCanvasElement>("#viewport")!;
     const canvas = document.createElement("canvas");
     viewport.appendChild(canvas);
@@ -66,14 +69,16 @@ export class Viewport {
   }
 
   private drawColumn(x: number) {
+    const player = this.engine.player;
+
     // Position and direction of the casted ray.
     const screenX = (2 * x) / this.width - 1; // The x column of the screen.
-    const rayDirX = Game.player.rotX + Game.player.planeX * screenX;
-    const rayDirY = Game.player.rotY + Game.player.planeY * screenX;
+    const rayDirX = player.rotX + player.planeX * screenX;
+    const rayDirY = player.rotY + player.planeY * screenX;
 
     // Current map cell that the player is in. This mutates as we walk down the ray looking for a wall.
-    let mapX = Math.floor(Game.player.x);
-    let mapY = Math.floor(Game.player.y);
+    let mapX = Math.floor(player.x);
+    let mapY = Math.floor(player.y);
 
     // Length of ray for one map cell (x or y side)
     const deltaDistX = rayDirX === 0 ? Number.POSITIVE_INFINITY : Math.abs(1 / rayDirX);
@@ -84,8 +89,8 @@ export class Viewport {
     const stepY = rayDirY < 0 ? -1 : 1;
 
     // Length of initial segment of ray from player position to next. Mutates as we walk down the ray.
-    let sideDistX = rayDirX < 0 ? Game.player.x - mapX : (mapX + 1.0 - Game.player.x) * deltaDistX;
-    let sideDistY = rayDirY < 0 ? Game.player.y - mapY : (mapY + 1.0 - Game.player.y) * deltaDistY;
+    let sideDistX = rayDirX < 0 ? player.x - mapX : (mapX + 1.0 - player.x) * deltaDistX;
+    let sideDistY = rayDirY < 0 ? player.y - mapY : (mapY + 1.0 - player.y) * deltaDistY;
 
     // Keep track of the cell we're raycasting through. If there's a hit, we break the loop and this is our cell.
     let cell: number;
@@ -107,7 +112,7 @@ export class Viewport {
       }
 
       // Look up the map tile for this cell.
-      cell = Game.world.getCell(mapX, mapY);
+      cell = this.engine.world.getCell(mapX, mapY);
 
       // Did we hit something given the map?
       if (cell > 0) {
@@ -127,9 +132,9 @@ export class Viewport {
 
     // Where on the wall the ray hit (for determining what part of a texture to draw.
     // I think 0 would be the far left of the wall segment, 1 is the far right.
-    const wallX = (!drawXWall ? Game.player.x + perpWallDist * rayDirX : Game.player.y + perpWallDist * rayDirY) % 1;
+    const wallX = (!drawXWall ? player.x + perpWallDist * rayDirX : player.y + perpWallDist * rayDirY) % 1;
 
-    const texture = Engine.assets.textures.Gravel;
+    const texture = this.engine.assets.textures.Gravel;
 
     // X coordinate on the texture.
     let texX = Math.floor(wallX * texture.width);
