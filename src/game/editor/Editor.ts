@@ -1,5 +1,5 @@
 import { Engine } from "../Engine";
-import { GLCanvas } from "../GLCanvas";
+import { GLCanvas } from "../../lib/GLCanvas";
 import { DrawTool, EditorTool, PanTool, ToolName } from "./tools";
 
 const TILE_SIZE = 24;

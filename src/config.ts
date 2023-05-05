@@ -1,4 +1,4 @@
-import { Tile } from "./engine/World";
+import { Tile } from "./game/World";
 
 // Max dimensions for the world (in tiles). Maybe not necessary.
 export const MAX_WIDTH = 10_000;

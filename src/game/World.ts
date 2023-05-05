@@ -1,15 +1,15 @@
 import { TextureName } from "../assets/textures";
 import { MAX_HEIGHT, MAX_WIDTH, TILE_CONFIGS } from "../config";
-import { assert } from "../utils";
+import { assert } from "../lib/utils";
 
 export type TileName = TextureName | "Empty";
 export type Tile = { name: TileName; img: HTMLImageElement; type: "Wall" | "Doodad" | "Item" };
 
 export class World {
   // A sparse array with a known max width/height so that we may easily access any specific row.
-  cells: number[] = new Array(MAX_WIDTH * MAX_HEIGHT);
-  atlas: Record<number, Tile> = {};
-  defaultTile = 1;
+  private cells: number[] = new Array(MAX_WIDTH * MAX_HEIGHT);
+  private atlas: Record<number, Tile> = {};
+  private defaultTile = 1; // TODO: is this a constant?
 
   constructor() {
     // generate a box. (TODO: Proof of concept)

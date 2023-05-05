@@ -1,5 +1,5 @@
 import texture from "../assets/textures/wolftextures.png";
-import { invLerp, lerp, toHex } from "../utils";
+import { invLerp, lerp, toHex } from "../lib/utils";
 import { Engine } from "./Engine";
 type RGB = [number, number, number];
 const SKY: RGB = [135, 206, 235];

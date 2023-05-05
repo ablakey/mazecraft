@@ -1,4 +1,4 @@
-import { Engine as EngineSingleton } from "./engine/Engine";
+import { Engine as EngineSingleton } from "./game/Engine";
 
 async function main() {
   window.Engine = new EngineSingleton();
