@@ -31,7 +31,8 @@ export class Player {
     }
   }
 
-  rotateRight() {
+  rotateLeft() {
+    // TODO: generic rotate with a direction argument.
     const oldDirX = this.rotX;
     this.rotX = this.rotX * Math.cos(-ROT_SPEED) - this.rotY * Math.sin(-ROT_SPEED);
     this.rotY = oldDirX * Math.sin(-ROT_SPEED) + this.rotY * Math.cos(-ROT_SPEED);
