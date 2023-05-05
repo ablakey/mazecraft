@@ -48,8 +48,9 @@ export class GLCanvas {
     viewport.appendChild(canvas);
 
     canvas.addEventListener("mousedown", (e) => onMouseEvent(e, "mousedown"));
-    canvas.addEventListener("mouseup", (e) => onMouseEvent(e, "mouseup"));
     canvas.addEventListener("mousemove", (e) => onMouseEvent(e, "mousemove"));
+    canvas.addEventListener("mouseup", (e) => onMouseEvent(e, "mouseup"));
+    canvas.addEventListener("mouseleave", (e) => onMouseEvent(e, "mouseup"));
 
     const gl = canvas.getContext("webgl")!;
     this.gl = gl;
@@ -109,7 +110,7 @@ export class GLCanvas {
   }
 
   private buildMatrix(x: number, y: number, w: number, h: number) {
-    // Don't ask. I stubbornly refuse to grok matrices. This is a combination of orthographic, scale, transform.
+    // This is a combination of orthographic, scale, transform. Yes, that makes it not very re-usable.
     // See: https://webglfundamentals.org/webgl/resources/m4.js
     const ww = 2 / this.gl.canvas.width;
     const hh = 2 / -this.gl.canvas.height;
