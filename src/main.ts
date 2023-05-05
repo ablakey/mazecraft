@@ -24,4 +24,6 @@ declare global {
   interface Window {
     Engine: EngineSingleton;
   }
+  // Common. Don't want to have to import it everywhere.
+  type Vec2 = [number, number];
 }

@@ -1,64 +1,48 @@
-import { Engine } from "./Engine";
-import { GLCanvas } from "./GLCanvas";
-
-type MapFrameEvent =
-  | {
-      type: "mousemove";
-      frameX: number;
-      frameY: number;
-    }
-  | {
-      type: "mousedown";
-    }
-  | {
-      type: "mouseup";
-    };
+import { Engine } from "../Engine";
+import { GLCanvas } from "../GLCanvas";
+import { DrawTool, EditorTool, PanTool, ToolName } from "./tools";
 
 const TILE_SIZE = 24;
 const BORDER_SIZE = 1;
 const CELL_SIZE = TILE_SIZE + BORDER_SIZE;
 
-export class MapFrame {
+export class Editor {
   private engine: Engine;
   private width: number;
   private height: number;
 
   // Pixel coordinates of the very top-left pixel.
-  private origin: [number, number];
+  public origin: Vec2;
 
   private glcanvas: GLCanvas;
 
-  // MapFrame coordinates when mouse was held down.
-  private mouseDownCoords: [number, number] | null = null;
+  private currentTool: ToolName = "Pan";
 
-  // Origin coordinates when mouse was held down.
-  private mouseDownOrigin: [number, number] | null = null;
-
-  private interaction = "Pan";
+  private tools: Record<ToolName, EditorTool>;
 
   constructor(w: number, h: number, initialX: number, initialY: number, engine: Engine) {
     this.engine = engine;
-    this.glcanvas = new GLCanvas(w, h, "#mapframe", this.onMouseEvent.bind(this));
+    this.glcanvas = new GLCanvas(w, h, "#Editor", this.onMouseEvent.bind(this));
     this.width = w;
     this.height = h;
 
     this.origin = [initialX * CELL_SIZE, initialY * CELL_SIZE];
+
+    this.tools = {
+      Pan: new PanTool(this.engine),
+      Draw: new DrawTool(this.engine),
+    };
   }
 
-  private onMouseEvent(e: MouseEvent, type: MapFrameEvent["type"]) {
-    // const mapX = Math.floor((e.offsetX + this.originX) / CELL_SIZE);
-    // const mapY = Math.floor((e.offsetY + this.originY) / CELL_SIZE);
+  private onMouseEvent(e: MouseEvent, type: "mousedown" | "mousemove" | "mouseup") {
+    const tool = this.tools[this.currentTool];
 
     if (type === "mousedown") {
-      this.mouseDownCoords = [e.offsetX, e.offsetY];
-      this.mouseDownOrigin = [...this.origin];
+      tool.begin([e.offsetX, e.offsetY]);
     } else if (type === "mouseup") {
-      this.mouseDownCoords = null;
-      this.mouseDownOrigin = null;
-    } else if (this.mouseDownCoords) {
-      const deltaX = e.offsetX - this.mouseDownCoords[0];
-      const deltaY = e.offsetY - this.mouseDownCoords[1];
-      this.origin = [this.mouseDownOrigin![0] - deltaX, this.mouseDownOrigin![1] - deltaY];
+      tool.end();
+    } else {
+      tool.update([e.offsetX, e.offsetY]);
     }
   }
 

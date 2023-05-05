@@ -10,7 +10,7 @@
   display: none;
 }
 
-#mapframe > canvas {
+#editor > canvas {
   width: 800;
   height: 600;
   image-rendering: pixelated;

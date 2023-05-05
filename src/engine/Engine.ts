@@ -1,7 +1,7 @@
 import { Player } from "./Player";
 import { World } from "./World";
 import { Assets } from "./Assets";
-import { MapFrame } from "./MapFrame";
+import { Editor } from "./editor/Editor";
 import { Viewport } from "./Viewport";
 import { MAX_HEIGHT, MAX_WIDTH } from "../config";
 
@@ -13,7 +13,7 @@ const FPS = 60;
 export class Engine {
   assets: Assets;
   viewport: Viewport;
-  mapframe: MapFrame;
+  editor: Editor;
   world: World;
   player: Player;
 
@@ -28,7 +28,7 @@ export class Engine {
     this.assets = new Assets();
     // this.viewport = new Viewport(640, 400);
     // Begin at the middle of the World to make editing in any direction easy.
-    this.mapframe = new MapFrame(800, 600, MAX_WIDTH / 2, MAX_HEIGHT / 2, this);
+    this.editor = new Editor(800, 600, MAX_WIDTH / 2, MAX_HEIGHT / 2, this);
 
     this.player = new Player();
     this.world = new World();
@@ -62,7 +62,7 @@ export class Engine {
     // Game.player.rotateRight();
     // this.viewport.drawFrame();
 
-    this.mapframe.render();
+    this.editor.render();
 
     requestAnimationFrame(() => this.tick());
   }
