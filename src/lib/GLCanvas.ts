@@ -36,15 +36,14 @@ export class GLCanvas {
   private textureCache: Map<HTMLImageElement, { texture: WebGLTexture; width: number; height: number }> = new Map();
 
   constructor(
-    width: number,
-    height: number,
+    canvasSize: Vec2,
     parentElementSelector: string,
     onMouseEvent: (e: MouseEvent, type: "mousemove" | "mousedown" | "mouseup") => void
   ) {
     const viewport = document.querySelector<HTMLCanvasElement>(parentElementSelector)!;
     const canvas = document.createElement("canvas");
-    canvas.width = width;
-    canvas.height = height;
+    canvas.width = canvasSize[0];
+    canvas.height = canvasSize[1];
     viewport.appendChild(canvas);
 
     canvas.addEventListener("mousedown", (e) => onMouseEvent(e, "mousedown"));

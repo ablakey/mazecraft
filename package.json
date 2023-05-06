@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "parcel ./src/index.html",
+    "test": "./node_modules/.bin/tsc --noEmit",
     "build": "npm run buildAssets && parcel build --public-url ./ --no-source-maps",
     "buildAssets": "ts-node ./src/assets/buildAssets.ts"
   },

@@ -1,6 +1,9 @@
 import { Engine } from "../Engine";
 import { GLCanvas } from "../../lib/GLCanvas";
-import { DrawTool, EditorTool, PanTool, ToolName } from "./tools";
+import { EditorTool, ToolName } from "./tools";
+import { PanTool } from "./tools/PanTool";
+import { DrawTool } from "./tools/DrawTool";
+import { TileId } from "../../config";
 
 const TILE_SIZE = 24;
 const BORDER_SIZE = 1;
@@ -8,23 +11,23 @@ const CELL_SIZE = TILE_SIZE + BORDER_SIZE;
 
 export class Editor {
   private engine: Engine;
-  private width: number;
-  private height: number;
+  private canvasSize: Vec2; // width, height of canvas in pixels.
+
+  public selectedTile: TileId = 0; // if any editing is done, this is the selected tile to use.
 
   // Pixel coordinates of the very top-left pixel.
   public origin: Vec2;
 
   private glcanvas: GLCanvas;
 
-  private currentTool: ToolName = "Pan";
+  public currentTool: ToolName = "Draw";
 
   private tools: Record<ToolName, EditorTool>;
 
-  constructor(w: number, h: number, initialX: number, initialY: number, engine: Engine) {
+  constructor(canvasSize: Vec2, initialX: number, initialY: number, engine: Engine) {
     this.engine = engine;
-    this.glcanvas = new GLCanvas(w, h, "#Editor", this.onMouseEvent.bind(this));
-    this.width = w;
-    this.height = h;
+    this.glcanvas = new GLCanvas(canvasSize, "#Editor", this.onMouseEvent.bind(this));
+    this.canvasSize = canvasSize;
 
     this.origin = [initialX * CELL_SIZE, initialY * CELL_SIZE];
 
@@ -36,13 +39,18 @@ export class Editor {
 
   private onMouseEvent(e: MouseEvent, type: "mousedown" | "mousemove" | "mouseup") {
     const tool = this.tools[this.currentTool];
+    const canvasCoords: Vec2 = [e.offsetX, e.offsetY];
+    const gridCoords: Vec2 = [
+      Math.floor((e.offsetX + this.origin[0]) / CELL_SIZE),
+      Math.floor((e.offsetY + this.origin[1]) / CELL_SIZE),
+    ];
 
     if (type === "mousedown") {
-      tool.begin([e.offsetX, e.offsetY]);
+      tool.begin(canvasCoords, gridCoords);
     } else if (type === "mouseup") {
       tool.end();
     } else {
-      tool.update([e.offsetX, e.offsetY]);
+      tool.update(canvasCoords, gridCoords);
     }
   }
 
@@ -54,8 +62,8 @@ export class Editor {
 
   drawTiles() {
     // Row and column count to be rendered in the frame.
-    const numCols = Math.ceil(this.width / CELL_SIZE);
-    const numRows = Math.ceil(this.height / CELL_SIZE);
+    const numCols = Math.ceil(this.canvasSize[0] / CELL_SIZE);
+    const numRows = Math.ceil(this.canvasSize[1] / CELL_SIZE);
 
     // Whole cell offsets.
     const xCell = Math.floor(this.origin[0] / CELL_SIZE);
@@ -68,9 +76,8 @@ export class Editor {
     // Add an extra before and after for when we're showing part rows/cols.
     for (let row = -1; row < numRows + 1; row++) {
       for (let col = -1; col < numCols + 1; col++) {
-        const x = col + xCell;
-        const y = row + yCell;
-        const tileId = this.engine.world.getCell(x, y);
+        const coords: Vec2 = [col + xCell, row + yCell];
+        const tileId = this.tools[this.currentTool].getRenderCell?.(coords) ?? this.engine.world.getCell(coords);
 
         // Optimization: if the tile is empty, just draw nothing.
         if (tileId === 0) {

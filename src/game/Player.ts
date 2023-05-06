@@ -20,12 +20,11 @@ export class Player {
   }
 
   moveForward() {
-    const newX = this.x + this.rotX * MOVE_SPEED;
-    const newY = this.y + this.rotY * MOVE_SPEED;
+    const newPos: Vec2 = [this.x + this.rotX * MOVE_SPEED, this.y + this.rotY * MOVE_SPEED];
 
-    if (!Engine.world.getCell(newX, newY)) {
-      this.x = newX;
-      this.y = newY;
+    if (!Engine.world.getCell(newPos)) {
+      this.x = newPos[0];
+      this.y = newPos[1];
     } else {
       console.log("collision!");
     }
