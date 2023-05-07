@@ -1,10 +1,10 @@
 import { EditorTool } from ".";
-import { MAX_TILE_DIMENSIONS, TileId } from "../../../config";
+import { MAX_TILE_DIMENSIONS } from "../../../config";
 import { Grid } from "../../../lib/Grid";
 
 export class DrawTool extends EditorTool {
   static readonly toolname = "Draw";
-  private grid: Grid<TileId> = new Grid(MAX_TILE_DIMENSIONS);
+  private grid: Grid<number> = new Grid(MAX_TILE_DIMENSIONS);
 
   begin(initialCanvasCoords: Vec2, initialGridCoords: Vec2): void {
     super.begin(initialCanvasCoords, initialGridCoords);

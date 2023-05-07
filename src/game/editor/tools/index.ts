@@ -1,4 +1,3 @@
-import { TileId } from "../../../config";
 import { Engine } from "../../Engine";
 import { DrawTool } from "./DrawTool";
 import { PanTool } from "./PanTool";
@@ -24,7 +23,7 @@ export abstract class EditorTool {
     this.initialGridCoords = null;
   }
 
-  getRenderCell?(coords: Vec2): TileId | undefined;
+  getRenderCell?(coords: Vec2): number | undefined;
 }
 
 export type ToolName = (typeof PanTool | typeof DrawTool)["toolname"];

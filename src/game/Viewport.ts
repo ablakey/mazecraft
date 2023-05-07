@@ -132,7 +132,7 @@ export class Viewport {
     // I think 0 would be the far left of the wall segment, 1 is the far right.
     const wallX = (!drawXWall ? player.x + perpWallDist * rayDirX : player.y + perpWallDist * rayDirY) % 1;
 
-    const texture = this.engine.assets.textures.Gravel;
+    const texture = this.engine.assets.textures.gravel;
 
     // X coordinate on the texture.
     let texX = Math.floor(wallX * texture.width);

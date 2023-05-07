@@ -3,7 +3,6 @@ import { GLCanvas } from "../../lib/GLCanvas";
 import { EditorTool, ToolName } from "./tools";
 import { PanTool } from "./tools/PanTool";
 import { DrawTool } from "./tools/DrawTool";
-import { TileId } from "../../config";
 
 const TILE_SIZE = 24;
 const BORDER_SIZE = 1;
@@ -13,7 +12,7 @@ export class Editor {
   private engine: Engine;
   private canvasSize: Vec2; // width, height of canvas in pixels.
 
-  public selectedTile: TileId = 0; // if any editing is done, this is the selected tile to use.
+  public selectedTile = 0; // if any editing is done, this is the selected tile to use.
 
   // Pixel coordinates of the very top-left pixel.
   public origin: Vec2;

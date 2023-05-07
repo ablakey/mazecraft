@@ -4,9 +4,11 @@
 // Use 'npm run buildAssets' to regenerate.
 //
 
-import Empty from "./Empty.png";
-import Gravel from "./Gravel.png";
+import bricks from "./bricks.png";
+import empty from "./empty.png";
+import gravel from "./gravel.png";
+import oak_planks from "./oak_planks.png";
 
-export const textures = { Empty, Gravel };
+export const textures = { bricks, empty, gravel, oak_planks };
 
 export type TextureName = keyof typeof textures;

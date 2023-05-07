@@ -1,5 +1,11 @@
 # mazecraft
 
+## Attributions.
+
+TODO.
+
+Textures: https://github.com/ClassicFaithful/64x-Jappa
+
 ## Events
 
 - dragging to pan the map
