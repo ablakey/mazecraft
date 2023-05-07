@@ -31,7 +31,7 @@ export class Engine {
     this.editor = new Editor([800, 600], MAX_TILE_DIMENSIONS[0] / 2, MAX_TILE_DIMENSIONS[1] / 2, this);
 
     this.player = new Player();
-    this.world = new World();
+    this.world = new World(MAX_TILE_DIMENSIONS);
   }
 
   async init() {

@@ -76,7 +76,7 @@ export class Editor {
     for (let row = -1; row < numRows + 1; row++) {
       for (let col = -1; col < numCols + 1; col++) {
         const coords: Vec2 = [col + xCell, row + yCell];
-        const tileId = this.tools[this.currentTool].getRenderCell?.(coords) ?? this.engine.world.getCell(coords);
+        const tileId = this.tools[this.currentTool].getRenderCell?.(coords) ?? this.engine.world.get(coords);
 
         // Optimization: if the tile is empty, just draw nothing.
         if (tileId === 0) {

@@ -22,7 +22,7 @@ export class Player {
   moveForward() {
     const newPos: Vec2 = [this.x + this.rotX * MOVE_SPEED, this.y + this.rotY * MOVE_SPEED];
 
-    if (!Engine.world.getCell(newPos)) {
+    if (!Engine.world.get(newPos)) {
       this.x = newPos[0];
       this.y = newPos[1];
     } else {

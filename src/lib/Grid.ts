@@ -1,19 +1,28 @@
-export class Grid<T> {
-  // A sparse array with a known max width/height so that we may easily access any specific row.
-  private cells: T[];
-  dimensions: Vec2;
+export class Grid {
+  private dimensions: Vec2;
+  private map: Map<number, number> = new Map();
 
   constructor(dimensions: Vec2) {
-    this.cells = new Array<T>(dimensions[0] * dimensions[1]);
     this.dimensions = dimensions;
   }
 
-  get(coords: Vec2): T | undefined {
-    // TODO: error if looking outside the width or height.
-    return this.cells[coords[1] * this.dimensions[0] + coords[0]] ?? undefined;
+  get(coords: Vec2) {
+    return this.map.get(coords[1] * this.dimensions[0] + coords[0]);
   }
 
-  set(coords: Vec2, value: T) {
-    this.cells[coords[1] * this.dimensions[0] + coords[0]] = value;
+  set(coords: Vec2, value: number) {
+    this.map.set(coords[1] * this.dimensions[0] + coords[0], value);
+  }
+
+  clear() {
+    this.map.clear();
+  }
+
+  forEach(callback: (value: number, coords: Vec2) => void) {
+    this.map.forEach((v, k) => {
+      const x = k % this.dimensions[0];
+      const y = Math.floor(k / this.dimensions[0]);
+      callback(v, [x, y]);
+    });
   }
 }

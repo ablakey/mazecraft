@@ -4,25 +4,16 @@ import { PanTool } from "./PanTool";
 
 export abstract class EditorTool {
   protected engine: Engine;
-  protected initialCanvasCoords: Vec2 | null;
-  protected initialGridCoords: Vec2 | null;
 
   constructor(engine: Engine) {
     this.engine = engine;
   }
 
-  begin(initialCanvasCoords: Vec2, initialGridCoords: Vec2) {
-    this.initialCanvasCoords = initialCanvasCoords;
-    this.initialGridCoords = initialGridCoords;
-  }
-
+  abstract begin(canvasCoords: Vec2, gridCoords: Vec2): void;
   abstract update(canvasCoords: Vec2, gridCoords: Vec2): void;
+  abstract end(): void;
 
-  end() {
-    this.initialCanvasCoords = null;
-    this.initialGridCoords = null;
-  }
-
+  // Can't be abstract if it's optional. I dunno either.
   getRenderCell?(coords: Vec2): number | undefined;
 }
 
