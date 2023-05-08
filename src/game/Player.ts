@@ -11,7 +11,7 @@ export class Player {
 
   constructor() {
     this.position = [0, 0];
-    this.rotX = -1;
+    this.rotX = 1;
     this.rotY = 0;
     this.planeX = 0;
     this.planeY = 0.66;

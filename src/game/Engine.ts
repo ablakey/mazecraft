@@ -39,12 +39,23 @@ export class Engine {
     await this.world.prepareTiles();
 
     // Locate player (middle of a cell)
-    const playerX = MAX_TILE_DIMENSIONS[0] / 2;
-    const playerY = MAX_TILE_DIMENSIONS[1] / 2;
-    console.log(playerX, playerY);
-    this.player.position = [playerX, playerY];
+    const pos: Vec2 = [MAX_TILE_DIMENSIONS[0] / 2, MAX_TILE_DIMENSIONS[1] / 2];
+    this.player.position = [pos[0] + 0.5, pos[1] + 0.5];
     this.editor.centerOn(this.player.tilePosition);
-    this.world.set(this.player.tilePosition, 0);
+
+    this.world.set(pos, 0);
+    this.world.set([pos[0] - 1, pos[1]], 0);
+    this.world.set([pos[0] + 1, pos[1]], 0);
+
+    this.world.set([pos[0], pos[1] - 1], 0);
+    this.world.set([pos[0] - 1, pos[1] - 1], 0);
+    this.world.set([pos[0] + 1, pos[1] - 1], 0);
+
+    this.world.set([pos[0], pos[1] + 1], 0);
+    this.world.set([pos[0] - 1, pos[1] + 1], 0);
+    this.world.set([pos[0] + 1, pos[1] + 1], 0);
+
+    this.world.set([pos[0] + 2, pos[1]], 0);
   }
 
   play() {
