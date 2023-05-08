@@ -2,15 +2,35 @@
   box-sizing: border-box;
 }
 
+body {
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+}
+
+#left {
+  width: 50%;
+}
+
+#right {
+  width: 50%;
+}
+
+#viewport {
+  aspect-ratio: 4/3;
+}
+
+#editor {
+  aspect-ratio: 4/3;
+}
+
 #viewport > canvas {
-  width: 640;
-  height: 480;
   image-rendering: pixelated;
+  width: 100%;
 }
 
 #editor > canvas {
-  width: 800;
-  height: 600;
+  width: 100%;
   image-rendering: pixelated;
   border: 1px solid red;
 }
