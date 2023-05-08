@@ -100,7 +100,7 @@ export class Viewport {
       }
 
       // Look up the map tile for this cell.
-      cell = this.engine.world.get([mapX, mapY]);
+      cell = this.engine.editor.getEditingTile([mapX, mapY]) ?? this.engine.world.get([mapX, mapY]);
 
       // Did we hit something given the map?
       if (cell > 0) {

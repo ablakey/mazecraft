@@ -13,10 +13,10 @@ export class Editor {
   private glcanvas: GLCanvas;
   private canvasSize: Vec2; // width, height of canvas in pixels.
   private tools: Record<ToolName, EditorTool>;
+  private currentTool: ToolName = "Draw";
 
   public origin: Vec2; // Pixel coordinates of the very top-left pixel.
   public selectedTile = 0; // if any editing is done, this is the selected tile to use.
-  public currentTool: ToolName = "Draw";
 
   constructor(canvasSize: Vec2, engine: Engine) {
     this.engine = engine;
@@ -50,6 +50,19 @@ export class Editor {
     } else {
       tool.update(canvasCoords, gridCoords);
     }
+  }
+
+  /**
+   * Get a tile that's currently being edited. These are what the user are drawing in real-time, but haven't been
+   * committed to the world state.
+   *
+   * Not sure if this is a good idea. It's an amazing effect when editing the world, but it might have implications
+   * on any future AI and such.  Though I kind of want to deal with those things as well.  So we might want to abstract
+   * the two sets of getTile into one that always overlays the editing tiles, if any, when being asked about the state
+   * of the world.
+   */
+  getEditingTile(coords: Vec2) {
+    return this.tools[this.currentTool].getRenderCell?.(coords);
   }
 
   render() {
