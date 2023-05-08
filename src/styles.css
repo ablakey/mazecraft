@@ -3,11 +3,9 @@
 }
 
 #viewport > canvas {
-  width: 960;
-  height: 600;
+  width: 640;
+  height: 480;
   image-rendering: pixelated;
-  /* Temp while working on map */
-  display: none;
 }
 
 #editor > canvas {

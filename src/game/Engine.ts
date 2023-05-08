@@ -26,9 +26,9 @@ export class Engine {
 
   constructor() {
     this.assets = new Assets();
-    // this.viewport = new Viewport(640, 400);
+    this.viewport = new Viewport([640, 480], this);
     // Begin at the middle of the World to make editing in any direction easy.
-    this.editor = new Editor([800, 600], MAX_TILE_DIMENSIONS[0] / 2, MAX_TILE_DIMENSIONS[1] / 2, this);
+    this.editor = new Editor([800, 600], this);
 
     this.player = new Player();
     this.world = new World(MAX_TILE_DIMENSIONS);
@@ -37,6 +37,14 @@ export class Engine {
   async init() {
     await this.assets.loadTextures();
     await this.world.prepareTiles();
+
+    // Locate player (middle of a cell)
+    const playerX = MAX_TILE_DIMENSIONS[0] / 2;
+    const playerY = MAX_TILE_DIMENSIONS[1] / 2;
+    console.log(playerX, playerY);
+    this.player.position = [playerX, playerY];
+    this.editor.centerOn(this.player.tilePosition);
+    this.world.set(this.player.tilePosition, 0);
   }
 
   play() {
@@ -59,8 +67,8 @@ export class Engine {
 
     // TODO: advance the game by a tick.
     // game.player.moveForward();
-    // Game.player.rotateRight();
-    // this.viewport.drawFrame();
+    // this.player.rotateLeft();
+    this.viewport.drawFrame();
 
     this.editor.render();
 

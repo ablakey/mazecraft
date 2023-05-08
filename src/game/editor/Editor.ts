@@ -10,30 +10,29 @@ const CELL_SIZE = TILE_SIZE + BORDER_SIZE;
 
 export class Editor {
   private engine: Engine;
-  private canvasSize: Vec2; // width, height of canvas in pixels.
-
-  public selectedTile = 0; // if any editing is done, this is the selected tile to use.
-
-  // Pixel coordinates of the very top-left pixel.
-  public origin: Vec2;
-
   private glcanvas: GLCanvas;
-
-  public currentTool: ToolName = "Draw";
-
+  private canvasSize: Vec2; // width, height of canvas in pixels.
   private tools: Record<ToolName, EditorTool>;
 
-  constructor(canvasSize: Vec2, initialX: number, initialY: number, engine: Engine) {
+  public origin: Vec2; // Pixel coordinates of the very top-left pixel.
+  public selectedTile = 0; // if any editing is done, this is the selected tile to use.
+  public currentTool: ToolName = "Draw";
+
+  constructor(canvasSize: Vec2, engine: Engine) {
     this.engine = engine;
     this.glcanvas = new GLCanvas(canvasSize, "#Editor", this.onMouseEvent.bind(this));
     this.canvasSize = canvasSize;
-
-    this.origin = [initialX * CELL_SIZE, initialY * CELL_SIZE];
+    this.origin = [0, 0];
 
     this.tools = {
       Pan: new PanTool(this.engine),
       Draw: new DrawTool(this.engine),
     };
+  }
+
+  centerOn(coords: Vec2) {
+    this.origin[0] = coords[0] * CELL_SIZE - Math.floor(this.canvasSize[0] / 2);
+    this.origin[1] = coords[1] * CELL_SIZE - Math.floor(this.canvasSize[1] / 2);
   }
 
   private onMouseEvent(e: MouseEvent, type: "mousedown" | "mousemove" | "mouseup") {

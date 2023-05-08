@@ -1,5 +1,4 @@
-import texture from "../assets/textures/wolftextures.png";
-import { invLerp, lerp, toHex } from "../lib/utils";
+import { invLerp, lerp, setDebug, toHex } from "../lib/utils";
 import { Engine } from "./Engine";
 type RGB = [number, number, number];
 const SKY: RGB = [135, 206, 235];
@@ -12,7 +11,6 @@ const GROUND: RGB = [200, 200, 200];
 export class Viewport {
   private canvasSize: Vec2;
   private ctx: CanvasRenderingContext2D;
-  private tex: HTMLImageElement;
   private engine: Engine;
 
   constructor(canvasSize: Vec2, engine: Engine) {
@@ -29,16 +27,6 @@ export class Viewport {
     this.ctx.canvas.width = canvasSize[0];
     this.ctx.canvas.height = canvasSize[1];
     this.canvasSize = canvasSize;
-  }
-
-  async loadTextures() {
-    return new Promise<void>((res) => {
-      this.tex = new Image();
-      this.tex.onload = () => {
-        res();
-      };
-      this.tex.src = texture;
-    });
   }
 
   drawFrame() {
@@ -68,6 +56,8 @@ export class Viewport {
 
   private drawColumn(x: number) {
     const player = this.engine.player;
+    const posX = player.position[0];
+    const posY = player.position[1];
 
     // Position and direction of the casted ray.
     const screenX = (2 * x) / this.canvasSize[0] - 1; // The x column of the screen.
@@ -75,8 +65,8 @@ export class Viewport {
     const rayDirY = player.rotY + player.planeY * screenX;
 
     // Current map cell that the player is in. This mutates as we walk down the ray looking for a wall.
-    let mapX = Math.floor(player.x);
-    let mapY = Math.floor(player.y);
+    let mapX = Math.floor(posX);
+    let mapY = Math.floor(posY);
 
     // Length of ray for one map cell (x or y side)
     const deltaDistX = rayDirX === 0 ? Number.POSITIVE_INFINITY : Math.abs(1 / rayDirX);
@@ -87,8 +77,8 @@ export class Viewport {
     const stepY = rayDirY < 0 ? -1 : 1;
 
     // Length of initial segment of ray from player position to next. Mutates as we walk down the ray.
-    let sideDistX = rayDirX < 0 ? player.x - mapX : (mapX + 1.0 - player.x) * deltaDistX;
-    let sideDistY = rayDirY < 0 ? player.y - mapY : (mapY + 1.0 - player.y) * deltaDistY;
+    let sideDistX = rayDirX < 0 ? posX - mapX : (mapX + 1.0 - posX) * deltaDistX;
+    let sideDistY = rayDirY < 0 ? posY - mapY : (mapY + 1.0 - posY) * deltaDistY;
 
     // Keep track of the cell we're raycasting through. If there's a hit, we break the loop and this is our cell.
     let cell: number;
@@ -130,9 +120,9 @@ export class Viewport {
 
     // Where on the wall the ray hit (for determining what part of a texture to draw.
     // I think 0 would be the far left of the wall segment, 1 is the far right.
-    const wallX = (!drawXWall ? player.x + perpWallDist * rayDirX : player.y + perpWallDist * rayDirY) % 1;
+    const wallX = (!drawXWall ? posX + perpWallDist * rayDirX : posY + perpWallDist * rayDirY) % 1;
 
-    const texture = this.engine.assets.textures.gravel;
+    const texture = this.engine.assets.textures.bricks;
 
     // X coordinate on the texture.
     let texX = Math.floor(wallX * texture.width);
@@ -150,13 +140,13 @@ export class Viewport {
      * Some basic fog experiment. The further away, the darker, given some clamped min and max.
      * This doesn't (yet) handle floor and ceiling so the effect doesn't work.
      */
-    const distance = Math.min(sideDistX, sideDistY);
-    const MIN_FOG_DISTANCE = 5.0;
-    const MAX_FOG_DISTANCE = 10;
-    if (distance > MIN_FOG_DISTANCE) {
-      const pct = invLerp(MIN_FOG_DISTANCE, MAX_FOG_DISTANCE, distance);
-      this.ctx.fillStyle = `rgb(0,0,0, ${pct})`;
-      this.ctx.fillRect(x, drawStart, 1, drawEnd - drawStart);
-    }
+    // const distance = Math.min(sideDistX, sideDistY);
+    // const MIN_FOG_DISTANCE = 5.0;
+    // const MAX_FOG_DISTANCE = 10;
+    // if (distance > MIN_FOG_DISTANCE) {
+    //   const pct = invLerp(MIN_FOG_DISTANCE, MAX_FOG_DISTANCE, distance);
+    //   this.ctx.fillStyle = `rgb(0,0,0, ${pct})`;
+    //   this.ctx.fillRect(x, drawStart, 1, drawEnd - drawStart);
+    // }
   }
 }

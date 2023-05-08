@@ -25,3 +25,7 @@ export function assert(condition: any, msg = "no info provided by developer."): 
 export function clamp(value: number, min: number, max: number) {
   return Math.max(Math.min(value, max), min);
 }
+
+export function setDebug(text: string) {
+  document.querySelector("#debug")!.innerHTML = text;
+}
