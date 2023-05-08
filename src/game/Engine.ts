@@ -7,6 +7,8 @@ import { Editor } from "./editor/Editor";
 
 const FPS = 60;
 
+let movingUp = false;
+
 /**
  * Engine runs the ticking and rendering.
  */
@@ -74,6 +76,16 @@ export class Engine {
     // A frame has elapsed.
     if (this.tickDelta > 1000 / FPS && this.isRunning) {
       this.tickDelta = 0;
+    }
+
+    this.player.position[1] += movingUp ? 0.01 : -0.01;
+
+    if (this.player.position[1] <= 5000) {
+      movingUp = true;
+    }
+
+    if (this.player.position[1] >= 5001) {
+      movingUp = false;
     }
 
     // TODO: advance the game by a tick.

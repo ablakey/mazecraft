@@ -60,9 +60,9 @@ export class Viewport {
     const posY = player.position[1];
 
     // Position and direction of the casted ray.
-    const screenX = (2 * x) / this.canvasSize[0] - 1; // The x column of the screen.
-    const rayDirX = player.rotX + player.planeX * screenX;
-    const rayDirY = player.rotY + player.planeY * screenX;
+    const cameraX = (2 * x) / this.canvasSize[0] - 1; // The x column of the screen.
+    const rayDirX = player.rotX + player.planeX * cameraX;
+    const rayDirY = player.rotY + player.planeY * cameraX;
 
     // Current map cell that the player is in. This mutates as we walk down the ray looking for a wall.
     let mapX = Math.floor(posX);
@@ -77,8 +77,8 @@ export class Viewport {
     const stepY = rayDirY < 0 ? -1 : 1;
 
     // Length of initial segment of ray from player position to next. Mutates as we walk down the ray.
-    let sideDistX = rayDirX < 0 ? posX - mapX : (mapX + 1.0 - posX) * deltaDistX;
-    let sideDistY = rayDirY < 0 ? posY - mapY : (mapY + 1.0 - posY) * deltaDistY;
+    let sideDistX = (rayDirX < 0 ? posX - mapX : mapX + 1.0 - posX) * deltaDistX;
+    let sideDistY = (rayDirY < 0 ? posY - mapY : mapY + 1.0 - posY) * deltaDistY;
 
     // Keep track of the cell we're raycasting through. If there's a hit, we break the loop and this is our cell.
     let cell: number;
