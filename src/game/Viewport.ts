@@ -1,4 +1,4 @@
-import { invLerp, lerp, setDebug, toHex } from "../lib/utils";
+import { getElementSize, lerp, toHex } from "../lib/utils";
 import { Engine } from "./Engine";
 type RGB = [number, number, number];
 const SKY: RGB = [135, 206, 235];
@@ -13,20 +13,17 @@ export class Viewport {
   private ctx: CanvasRenderingContext2D;
   private engine: Engine;
 
-  constructor(canvasSize: Vec2, engine: Engine) {
+  constructor(engine: Engine) {
     this.engine = engine;
     const viewport = document.querySelector<HTMLCanvasElement>("#viewport")!;
     const canvas = document.createElement("canvas");
     viewport.appendChild(canvas);
     this.ctx = canvas.getContext("2d")!;
     this.ctx.imageSmoothingEnabled = false;
-    this.setResolution(canvasSize);
-  }
 
-  setResolution(canvasSize: Vec2) {
-    this.ctx.canvas.width = canvasSize[0];
-    this.ctx.canvas.height = canvasSize[1];
-    this.canvasSize = canvasSize;
+    this.canvasSize = getElementSize("#viewport");
+    this.ctx.canvas.width = this.canvasSize[0];
+    this.ctx.canvas.height = this.canvasSize[1];
   }
 
   drawFrame() {

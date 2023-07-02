@@ -28,9 +28,9 @@ export class Engine {
 
   constructor() {
     this.assets = new Assets();
-    this.viewport = new Viewport([640, 480], this);
+    this.viewport = new Viewport(this);
     // Begin at the middle of the World to make editing in any direction easy.
-    this.editor = new Editor([800, 600], this);
+    this.editor = new Editor(this);
 
     this.player = new Player();
     this.world = new World(MAX_TILE_DIMENSIONS);

@@ -1,27 +1,36 @@
 * {
   box-sizing: border-box;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+/* Prevent elastic scrolling on game page. */
+html {
+  overflow: hidden;
 }
 
 body {
   margin: 0;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
 }
 
-#left {
-  width: 50%;
-}
-
-#right {
-  width: 50%;
+#frame {
+  height: 100%;
+  width: 100%;
+  max-width: 500px;
+  display: grid;
+  grid-template-rows: max-content 1fr max-content;
 }
 
 #viewport {
-  aspect-ratio: 4/3;
-}
-
-#editor {
-  aspect-ratio: 4/3;
+  aspect-ratio: 16/10;
 }
 
 #viewport > canvas {
@@ -32,5 +41,9 @@ body {
 #editor > canvas {
   width: 100%;
   image-rendering: pixelated;
+}
+
+#tools {
+  height: 100px;
   border: 1px solid red;
 }

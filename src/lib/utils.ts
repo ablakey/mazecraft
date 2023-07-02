@@ -29,3 +29,9 @@ export function clamp(value: number, min: number, max: number) {
 export function setDebug(text: string) {
   document.querySelector("#debug")!.innerHTML = text;
 }
+
+export function getElementSize(selector: string): Vec2 {
+  const el = document.querySelector<HTMLElement>(selector);
+  assert(el);
+  return [el.offsetWidth, el.offsetHeight];
+}

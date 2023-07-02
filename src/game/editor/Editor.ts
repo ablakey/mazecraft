@@ -3,10 +3,12 @@ import { GLCanvas } from "../../lib/GLCanvas";
 import { EditorTool, ToolName } from "./tools";
 import { PanTool } from "./tools/PanTool";
 import { DrawTool } from "./tools/DrawTool";
+import { getElementSize } from "../../lib/utils";
 
 const TILE_SIZE = 24;
 const BORDER_SIZE = 1;
 const CELL_SIZE = TILE_SIZE + BORDER_SIZE;
+const ELEMENT_ID = "#editor";
 
 export class Editor {
   private engine: Engine;
@@ -18,10 +20,12 @@ export class Editor {
   public origin: Vec2; // Pixel coordinates of the very top-left pixel.
   public selectedTile = 0; // if any editing is done, this is the selected tile to use.
 
-  constructor(canvasSize: Vec2, engine: Engine) {
+  constructor(engine: Engine) {
     this.engine = engine;
-    this.glcanvas = new GLCanvas(canvasSize, "#Editor", this.onMouseEvent.bind(this));
-    this.canvasSize = canvasSize;
+
+    this.canvasSize = getElementSize(ELEMENT_ID);
+
+    this.glcanvas = new GLCanvas(this.canvasSize, ELEMENT_ID, this.onMouseEvent.bind(this));
     this.origin = [0, 0];
 
     this.tools = {
