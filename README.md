@@ -30,3 +30,19 @@ previousValue is a number (enum mapping to tile)
 drawn is a number (enum mapping to tile)
 
 
+## Ideas
+
+- Show the missing upgrades greyed out. I'm thinking like analog indicator lights. 8 total. 2 columns.
+- Show empty minimap, top-right. It should be especially large.
+- 1:1 ratio viewport.
+- Editor becomes a separate thing you can tab into.  (Is it a separate browser tab?)
+
+## 8 Upgrades (ideas)
+
+- Higher resolution viewport
+- Sounds
+- The Minimap  (an upgrade that you can get multiple times?)
+  - Lidar only
+  - With history (ie. what blocks you've seen)
+  - with texture? (ie. before it's just filled or not... then there's textures)
+-
